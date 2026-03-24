@@ -4,6 +4,32 @@ on:
   schedule:
     - cron: '17 */6 * * *'
   workflow_dispatch:
+    inputs:
+      wms_ref:
+        description: 'Optional WMS ref (tag, branch, or SHA)'
+        required: false
+        default: ''
+        type: string
+      mqs_ref:
+        description: 'Optional MQS ref (tag, branch, or SHA)'
+        required: false
+        default: ''
+        type: string
+      tms_ref:
+        description: 'Optional TMS ref (tag, branch, or SHA)'
+        required: false
+        default: ''
+        type: string
+      mqclient_ref:
+        description: 'Optional MQClient ref (tag, branch, or SHA)'
+        required: false
+        default: ''
+        type: string
+      pilot_ref:
+        description: 'Optional Pilot ref (tag, branch, or SHA)'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: read
@@ -29,25 +55,36 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: Observation-Management-Service/ewms-workflow-management-service
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.wms_ref || '' }}
           path: sources/wms
 
       - name: Checkout MQS
         uses: actions/checkout@v6
         with:
           repository: Observation-Management-Service/ewms-message-queue-service
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.mqs_ref || '' }}
           path: sources/mqs
 
       - name: Checkout TMS
         uses: actions/checkout@v6
         with:
           repository: Observation-Management-Service/ewms-task-management-service
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tms_ref || '' }}
           path: sources/tms
 
       - name: Checkout MQClient
         uses: actions/checkout@v6
         with:
           repository: Observation-Management-Service/MQClient
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.mqclient_ref || '' }}
           path: sources/mqclient
+
+      - name: Checkout Pilot
+        uses: actions/checkout@v6
+        with:
+          repository: Observation-Management-Service/ewms-pilot
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.pilot_ref || '' }}
+          path: sources/pilot
 
       - uses: actions/setup-python@v6
         with:
@@ -57,6 +94,21 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install -r docs/requirements.txt
+
+      - name: Show selected refs
+        env:
+          WMS_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.wms_ref || '' }}
+          MQS_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.mqs_ref || '' }}
+          TMS_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.tms_ref || '' }}
+          MQCLIENT_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.mqclient_ref || '' }}
+          PILOT_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.pilot_ref || '' }}
+        run: |
+          set -euo pipefail
+          echo "WMS ref:      ${WMS_REF:-<default branch>}"
+          echo "MQS ref:      ${MQS_REF:-<default branch>}"
+          echo "TMS ref:      ${TMS_REF:-<default branch>}"
+          echo "MQClient ref: ${MQCLIENT_REF:-<default branch>}"
+          echo "Pilot ref:    ${PILOT_REF:-<default branch>}"
 
       - name: Build docs
         run: |
