@@ -6,3 +6,4 @@ Internal Services
    :maxdepth: 2
 
    Task Management Service | TMS <../tms/index>
+   EWMS Pilot | Pilot <../pilot/index>
