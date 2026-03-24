@@ -1,11 +1,5 @@
-.. include:: ../../sources/mqs/README.md
-   :parser: myst_parser.sphinx_
+Message Queue Service (MQS) — API Reference
+===========================================
 
-.. rubric:: API Reference
-
-Update this page once the MQS OpenAPI spec path is confirmed.
-
-.. code-block:: rst
-
-   .. openapi:: ../../sources/mqs/<path-to-openapi>.json
-      :examples:
+.. openapi:: ../../sources/mqs/mqs/openapi.json
+   :examples:

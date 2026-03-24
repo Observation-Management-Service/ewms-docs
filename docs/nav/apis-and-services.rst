@@ -5,5 +5,5 @@ APIs and Services
    :hidden:
    :maxdepth: 2
 
-   Workflow Management Service | WMS <../wms/api>
-   Message Queue Service | MQS <../mqs/api>
+   Workflow Management Service | WMS <../wms/index>
+   Message Queue Service | MQS <../mqs/index>
