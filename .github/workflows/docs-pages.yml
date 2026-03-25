@@ -163,11 +163,6 @@ jobs:
           echo "MQClient ref: ${MQCLIENT_REF:-<default branch>}"
           echo "Pilot ref:    ${PILOT_REF:-<default branch>}"
 
-      - name: Build docs
-        run: |
-          set -euo pipefail
-          sphinx-build -b html docs docs/_build/html
-
       - name: "Generate WMS schemas RST"
         run: |
           python -c "
@@ -201,6 +196,11 @@ jobs:
               lines.append('')
           pathlib.Path('docs/apis/wms-schemas.rst').write_text('\n'.join(lines))
           "
+
+      - name: Build docs
+        run: |
+          set -euo pipefail
+          sphinx-build -b html docs docs/_build/html
 
       - uses: actions/upload-pages-artifact@v4
         with:
