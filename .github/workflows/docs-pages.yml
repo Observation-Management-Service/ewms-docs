@@ -168,31 +168,38 @@ jobs:
           set -euo pipefail
           sphinx-build -b html docs docs/_build/html
 
-      - name: "Generate WMS schemas ReDoc page"
+      - name: "Generate WMS schemas RST"
         run: |
           python -c "
-          import pathlib, json
+          import json, pathlib, textwrap
           spec = json.loads(pathlib.Path('sources/wms/wms/schema/openapi.json').read_text())
-          spec_json = json.dumps(spec)
-          html = f'''<!DOCTYPE html>
-          <html>
-            <head>
-              <title>WMS API Schemas</title>
-              <meta charset=\"utf-8\"/>
-              <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-              <style>body{{margin:0;padding:0}}</style>
-            </head>
-            <body>
-              <div id=\"redoc-container\"></div>
-              <script src=\"https://cdn.jsdelivr.net/npm/redoc@2.1.5/bundles/redoc.standalone.js\"></script>
-              <script>
-                Redoc.init({spec_json}, {{requiredPropsFirst: true, hideHostname: true}}, document.getElementById(\"redoc-container\"))
-              </script>
-            </body>
-          </html>'''
-          out_dir = pathlib.Path('docs/_build/html/apis')
-          out_dir.mkdir(parents=True, exist_ok=True)
-          (out_dir / 'wms-schemas.html').write_text(html)
+          schemas = spec.get('components', {}).get('schemas', {})
+          lines = ['WMS API Schemas', '===============', '']
+          for name, schema in schemas.items():
+              lines.append(name)
+              lines.append('-' * len(name))
+              if desc := schema.get('description'):
+                  lines.append(textwrap.fill(desc, 80))
+              lines.append('')
+              props = schema.get('properties', {})
+              if props:
+                  lines.append('.. list-table::')
+                  lines.append('   :header-rows: 1')
+                  lines.append('   :widths: 25 15 60')
+                  lines.append('')
+                  lines.append('   * - Field')
+                  lines.append('     - Type')
+                  lines.append('     - Description')
+                  for pname, pschema in props.items():
+                      ptype = pschema.get('type', '')
+                      if not ptype and 'anyOf' in pschema:
+                          ptype = ' | '.join(s.get('type', '?') for s in pschema['anyOf'])
+                      pdesc = pschema.get('description', '')
+                      lines.append(f'   * - \`\`{pname}\`\`')
+                      lines.append(f'     - {ptype}')
+                      lines.append(f'     - {pdesc}')
+              lines.append('')
+          pathlib.Path('docs/apis/wms-schemas.rst').write_text('\n'.join(lines))
           "
 
       - uses: actions/upload-pages-artifact@v4
