@@ -119,13 +119,13 @@
 .wy-menu-vertical li.toctree-l3 > a {
     padding-top: 0.35rem;
     padding-bottom: 0.35rem;
-    padding-left: 3.0rem;
+    padding-left: 4.0rem;
     line-height: 1.35;
 }
 .wy-menu-vertical li.toctree-l4 > a {
     padding-top: 0.35rem;
     padding-bottom: 0.35rem;
-    padding-left: 4.0rem;
+    padding-left: 5.0rem;
     line-height: 1.35;
 }
 
