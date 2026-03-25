@@ -62,7 +62,9 @@
 .wy-menu-vertical li.current > ul > li,
 .wy-menu-vertical li.toctree-l2,
 .wy-menu-vertical li.toctree-l3,
-.wy-menu-vertical li.toctree-l4 {
+.wy-menu-vertical li.toctree-l4,
+.wy-menu-vertical li.toctree-l1.current,
+.wy-menu-vertical li.toctree-l1.ewms-force-open {
     background: transparent !important;
     margin: 0 !important;
 }
@@ -94,18 +96,29 @@
 .wy-menu-vertical li.toctree-l4.current > a:hover,
 .wy-menu-vertical li.current ul li.current > a,
 .wy-menu-vertical li.current ul li.current > a:hover {
-    background: rgba(255, 255, 255, 0.10) !important;
+    background: rgba(41, 128, 185, 0.35) !important;  /* blue tint, clearly visible */
     color: #ffffff !important;
     font-weight: 600 !important;
     box-shadow: inset 3px 0 0 #2980b9 !important;
 }
 
-/* Nested descendants: calm spacing. */
-.wy-menu-vertical li.toctree-l2 > a,
-.wy-menu-vertical li.toctree-l3 > a,
+/* Nested descendants: indented spacing to show hierarchy. */
+.wy-menu-vertical li.toctree-l2 > a {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    padding-left: 2.0rem;
+    line-height: 1.35;
+}
+.wy-menu-vertical li.toctree-l3 > a {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    padding-left: 3.0rem;
+    line-height: 1.35;
+}
 .wy-menu-vertical li.toctree-l4 > a {
     padding-top: 0.35rem;
     padding-bottom: 0.35rem;
+    padding-left: 4.0rem;
     line-height: 1.35;
 }
 
