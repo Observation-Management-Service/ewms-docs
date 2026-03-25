@@ -1,4 +1,4 @@
-Internal Services
+Internal Components
 =================
 
 .. toctree::
