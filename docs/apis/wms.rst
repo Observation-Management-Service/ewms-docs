@@ -1,6 +1,6 @@
 .. include:: ../_generated/wms-ref-banner.rst
 
-ewms.icecube.aq/v1/ — REST
+REST: ewms.icecube.aq/v1/
 =================================================
 
 .. openapi:: ../../sources/wms/wms/schema/openapi.json
