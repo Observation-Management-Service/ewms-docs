@@ -96,15 +96,15 @@
     box-shadow: inset 3px 0 0 #2980b9 !important;
 }
 
-/* Actual current page/link: stronger fill for l3/l4. */
+/* Actual current page/link: solid blue for l3/l4. */
 .wy-menu-vertical li.toctree-l3.current > a,
 .wy-menu-vertical li.toctree-l3.current > a:hover,
 .wy-menu-vertical li.toctree-l4.current > a,
 .wy-menu-vertical li.toctree-l4.current > a:hover {
-    background: rgba(41, 128, 185, 0.45) !important;
+    background: #2980b9 !important;
     color: #ffffff !important;
     font-weight: 600 !important;
-    box-shadow: inset 3px 0 0 #2980b9 !important;
+    box-shadow: none !important;
 }
 
 /* Nested descendants: indented spacing to show hierarchy. */
