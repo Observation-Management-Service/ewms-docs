@@ -27,7 +27,7 @@ html_css_files = ["ewms-banner.css", "ewms-nav.css"]
 
 html_theme_options = {
     "collapse_navigation": False,
-    "navigation_depth": 3,
+    "navigation_depth": 4,
     "includehidden": True,
     "titles_only": False,
 }
