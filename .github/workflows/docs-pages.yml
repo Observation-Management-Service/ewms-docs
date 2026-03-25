@@ -48,6 +48,16 @@ jobs:
         with:
           ref: ${{ github.sha }}  # lock to triggered commit (github.ref is dynamic)
 
+      - name: Initialize "ref" banner include files — needed even if empty for build to succeed
+        run: |
+          set -euo pipefail
+          mkdir -p docs/_generated
+          echo -n > docs/_generated/wms-ref-banner.rst
+          echo -n > docs/_generated/mqs-ref-banner.rst
+          echo -n > docs/_generated/tms-ref-banner.rst
+          echo -n > docs/_generated/mqclient-ref-banner.rst
+          echo -n > docs/_generated/pilot-ref-banner.rst
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -57,6 +67,15 @@ jobs:
           repository: Observation-Management-Service/ewms-workflow-management-service
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.wms_ref || '' }}
           path: sources/wms
+      - name: Write WMS "ref" banner
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.wms_ref != '' }}
+        run: |
+          set -euo pipefail
+          scripts/write-ref-banner.sh \
+              sources/wms \
+              WMS \
+              "${{ inputs.wms_ref }}" \
+              docs/_generated/wms-ref-banner.rst
 
       - name: Checkout MQS
         uses: actions/checkout@v6
@@ -64,6 +83,15 @@ jobs:
           repository: Observation-Management-Service/ewms-message-queue-service
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.mqs_ref || '' }}
           path: sources/mqs
+      - name: Write MQS "ref" banner
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mqs_ref != '' }}
+        run: |
+          set -euo pipefail
+          scripts/write-ref-banner.sh \
+              sources/mqs \
+              MQS \
+              "${{ inputs.mqs_ref }}" \
+              docs/_generated/mqs-ref-banner.rst
 
       - name: Checkout TMS
         uses: actions/checkout@v6
@@ -71,6 +99,15 @@ jobs:
           repository: Observation-Management-Service/ewms-task-management-service
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tms_ref || '' }}
           path: sources/tms
+      - name: Write TMS "ref" banner
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.tms_ref != '' }}
+        run: |
+          set -euo pipefail
+          scripts/write-ref-banner.sh \
+              sources/tms \
+              TMS \
+              "${{ inputs.tms_ref }}" \
+              docs/_generated/tms-ref-banner.rst
 
       - name: Checkout MQClient
         uses: actions/checkout@v6
@@ -78,6 +115,15 @@ jobs:
           repository: Observation-Management-Service/MQClient
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.mqclient_ref || '' }}
           path: sources/mqclient
+      - name: Write MQClient "ref" banner
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mqclient_ref != '' }}
+        run: |
+          set -euo pipefail
+          scripts/write-ref-banner.sh \
+              sources/mqclient \
+              MQClient \
+              "${{ inputs.mqclient_ref }}" \
+              docs/_generated/mqclient-ref-banner.rst
 
       - name: Checkout Pilot
         uses: actions/checkout@v6
@@ -85,6 +131,15 @@ jobs:
           repository: Observation-Management-Service/ewms-pilot
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.pilot_ref || '' }}
           path: sources/pilot
+      - name: Write Pilot "ref" banner
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.pilot_ref != '' }}
+        run: |
+          set -euo pipefail
+          scripts/write-ref-banner.sh \
+              sources/pilot \
+              Pilot \
+              "${{ inputs.pilot_ref }}" \
+              docs/_generated/pilot-ref-banner.rst
 
       - uses: actions/setup-python@v6
         with:

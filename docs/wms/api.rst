@@ -1,3 +1,5 @@
+.. include:: ../_generated/wms-ref-banner.rst
+
 Workflow Management Service (WMS) — API Reference
 =================================================
 
