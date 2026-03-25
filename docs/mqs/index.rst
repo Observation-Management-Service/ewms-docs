@@ -6,5 +6,3 @@
 .. toctree::
    :hidden:
    :maxdepth: 2
-
-   API Reference <api>
