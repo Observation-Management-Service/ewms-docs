@@ -48,8 +48,7 @@ jobs:
     steps:
       - name: Checkout here
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.sha }}  # lock to triggered commit (github.ref is dynamic)
+        # don't use `with: ref: ${{ github.sha }}` b/c we want always build the latest docs — even on re-runs
 
       - name: Initialize "ref" banner include files — needed even if empty for build to succeed
         run: |
