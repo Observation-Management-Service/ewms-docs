@@ -5,4 +5,4 @@ Public Libraries
    :hidden:
    :maxdepth: 10
 
-   oms-mqclient (Python) <mqclient>
+   mqclient

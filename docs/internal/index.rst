@@ -5,5 +5,5 @@ Internal Services
    :hidden:
    :maxdepth: 10
 
-   Task Management Service <tms>
-   Task Pilot <pilot>
+   tms
+   pilot
