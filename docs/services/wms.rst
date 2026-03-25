@@ -2,9 +2,3 @@
 
 .. include:: ../../sources/wms/README.md
    :parser: myst_parser.sphinx_
-
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-
-   API Reference <../apis/wms>
