@@ -22,9 +22,11 @@
 /* Strip boxiness from the whole rail. */
 .wy-menu-vertical li,
 .wy-menu-vertical ul,
-.wy-menu-vertical a,
 .wy-menu-vertical p.caption {
     box-shadow: none !important;
+    border: none !important;
+}
+.wy-menu-vertical a {
     border: none !important;
 }
 
@@ -97,14 +99,10 @@
     box-shadow: inset 3px 0 0 #2980b9 !important;
 }
 
-/* Actual current page/link: solid blue for l3/l4. */
+/* Actual current page/link: solid blue, identified by RTD's a.current class. */
 .wy-menu-vertical li.toctree-l1.current > ul a.current,
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul a.current,
-.wy-menu-vertical li.current > ul a.current,
-.wy-menu-vertical li.toctree-l3.current > a,
-.wy-menu-vertical li.toctree-l3.current > a:hover,
-.wy-menu-vertical li.toctree-l4.current > a,
-.wy-menu-vertical li.toctree-l4.current > a:hover {
+.wy-menu-vertical li.current > ul a.current {
     background: #2980b9 !important;
     color: #ffffff !important;
     font-weight: 600 !important;
