@@ -2,6 +2,7 @@ extensions = [
     'myst_parser',
     'sphinx.ext.githubpages',
     'sphinxcontrib.openapi',
+    'sphinxcontrib.redoc',
     'sphinx_rtd_theme',
 ]
 
