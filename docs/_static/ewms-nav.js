@@ -4,7 +4,6 @@
  * This keeps the EWMS navigation tree more consistently open across pages
  * without modifying the Sphinx RTD theme templates themselves.
  */
-
 document.addEventListener('DOMContentLoaded', () => {
     const menu = document.querySelector('.wy-menu-vertical');
     if (!menu) {
@@ -17,7 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
             continue;
         }
 
-        item.classList.add('ewms-force-open');
+        if (!item.classList.contains('current') && !item.classList.contains('on')) {
+            item.classList.add('ewms-force-open');
+        }
+
         childList.style.display = 'block';
     }
 });

@@ -1,24 +1,97 @@
-/* Hide RTD expand/collapse controls. */
+/* ==========================================================================
+   EWMS sidebar tuning
+   --------------------------------------------------------------------------
+   Goal:
+   - Keep first-level branches open
+   - Hide RTD +/- controls
+   - Make non-current expanded groups visually recede
+   - Preserve strong emphasis for the current page/branch
+   ========================================================================== */
+
+/* Hide RTD expand/collapse glyphs. */
 .wy-menu-vertical .toctree-expand {
     display: none !important;
 }
 
-/* Keep top-level sections open. */
+/* Keep first-level forced-open branches visible. */
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul {
     display: block !important;
 }
 
-/* Make force-open sections look like normal open sections. */
+/* Top-level section labels should remain dark and stable. */
+.wy-menu-vertical li.toctree-l1 > a,
+.wy-menu-vertical p.caption {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   Non-current expanded sibling branches:
+   use a muted cool-gray "container" instead of a bright card.
+   -------------------------------------------------------------------------- */
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul {
-    background: #e3e3e3;
+    background: #cfd5dc;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
 }
 
-/* Match link styling inside the opened section body. */
+/* Make links inside non-current expanded groups feel lighter-weight and less "boxed". */
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul a {
-    color: #404040;
+    background: transparent;
+    color: #243140;
+    font-weight: 400;
+    line-height: 1.35;
 }
 
-/* Optional: tighten the spacing a bit so it looks closer to the native open branch. */
-.wy-menu-vertical li.toctree-l1.ewms-force-open > ul li {
+/* Subtle hover state. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul a:hover {
+    background: #c3c9d1;
+    color: #16202b;
+}
+
+/* --------------------------------------------------------------------------
+   Current/active item:
+   reserve the strongest emphasis for the actual current page.
+   -------------------------------------------------------------------------- */
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.current > a:hover,
+.wy-menu-vertical li.current > ul a.current,
+.wy-menu-vertical li.current > ul a.current:hover,
+.wy-menu-vertical li.current ul li.current > a,
+.wy-menu-vertical li.current ul li.current > a:hover {
+    background: #b9c2cc;
+    color: #111827;
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 #2980b9;
+}
+
+/* Keep current branch children readable without turning the whole branch into a bright slab. */
+.wy-menu-vertical li.current > ul {
+    background: #d6dbe1;
+}
+
+.wy-menu-vertical li.current > ul a {
+    color: #243140;
+}
+
+/* --------------------------------------------------------------------------
+   Deeper nested items:
+   slightly tighter and calmer than default so the tree feels more uniform.
+   -------------------------------------------------------------------------- */
+.wy-menu-vertical li.toctree-l2 > a,
+.wy-menu-vertical li.toctree-l3 > a {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+
+/* Remove the "floating box" feeling from single-link groups. */
+.wy-menu-vertical li.toctree-l1 > ul > li {
     margin-bottom: 0;
+}
+
+/* Optional: make section separators a bit clearer without adding brightness. */
+.wy-menu-vertical li.toctree-l1 {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
