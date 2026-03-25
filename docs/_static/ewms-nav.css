@@ -99,11 +99,11 @@
     box-shadow: inset 3px 0 0 #2980b9 !important;
 }
 
-/* Actual current page/link: accent bar + stronger white, identified by RTD's a.current class. */
+/* Actual current page/link: blue tint + accent bar, identified by RTD's a.current class. */
 .wy-menu-vertical li.toctree-l1.current > ul a.current,
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul a.current,
 .wy-menu-vertical li.current > ul a.current {
-    background: transparent !important;
+    background: rgba(41, 128, 185, 0.35) !important;
     color: #ffffff !important;
     font-weight: 600 !important;
     box-shadow: inset 3px 0 0 #2980b9 !important;
