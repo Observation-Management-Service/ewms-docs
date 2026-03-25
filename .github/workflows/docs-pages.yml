@@ -46,9 +46,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout here
+      - name: Checkout here (main)
         uses: actions/checkout@v6
-        # don't use `with: ref: ${{ github.sha }}` b/c we want always build the latest docs — even on re-runs
+        with:
+          ref: "main"  # always build docs from main branch — so we can easily rerun the build if needed
 
       - name: Initialize "ref" banner include files — needed even if empty for build to succeed
         run: |
