@@ -1,6 +1,6 @@
 .. include:: ../_generated/mqs-ref-banner.rst
 
-Message-Passing REST Endpoints
+ewms.icecube.aq/v1/mqs — REST Endpoints
 ===========================================
 
 .. openapi:: ../../sources/mqs/mqs/openapi.json
