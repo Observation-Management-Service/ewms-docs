@@ -168,7 +168,7 @@ jobs:
           set -euo pipefail
           python scripts/generate_api_objects_rst.py \
           sources/wms/wms/schema/openapi.json \
-          docs/_generated/wms-objects.rst \
+          docs/apis/_generated/wms-objects.rst \
           --title "API Objects"
 
       - name: "Generate MQS schemas RST"
@@ -176,7 +176,7 @@ jobs:
           set -euo pipefail
           python scripts/generate_api_objects_rst.py \
             sources/mqs/mqs/openapi.json \
-            docs/_generated/mqs-objects.rst \
+            docs/apis/_generated/mqs-objects.rst \
             --title "API Objects"
 
       - name: Build docs
