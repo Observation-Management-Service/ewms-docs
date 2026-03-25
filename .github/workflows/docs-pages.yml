@@ -165,37 +165,19 @@ jobs:
 
       - name: "Generate WMS schemas RST"
         run: |
-          python -c "
-          import json, pathlib, textwrap
-          spec = json.loads(pathlib.Path('sources/wms/wms/schema/openapi.json').read_text())
-          schemas = spec.get('components', {}).get('schemas', {})
-          lines = ['WMS API Schemas', '===============', '']
-          for name, schema in schemas.items():
-              lines.append(name)
-              lines.append('-' * len(name))
-              if desc := schema.get('description'):
-                  lines.append(textwrap.fill(desc, 80))
-              lines.append('')
-              props = schema.get('properties', {})
-              if props:
-                  lines.append('.. list-table::')
-                  lines.append('   :header-rows: 1')
-                  lines.append('   :widths: 25 15 60')
-                  lines.append('')
-                  lines.append('   * - Field')
-                  lines.append('     - Type')
-                  lines.append('     - Description')
-                  for pname, pschema in props.items():
-                      ptype = pschema.get('type', '')
-                      if not ptype and 'anyOf' in pschema:
-                          ptype = ' | '.join(s.get('type', '?') for s in pschema['anyOf'])
-                      pdesc = pschema.get('description', '')
-                      lines.append(f'   * - \`\`{pname}\`\`')
-                      lines.append(f'     - {ptype}')
-                      lines.append(f'     - {pdesc}')
-              lines.append('')
-          pathlib.Path('docs/apis/wms-schemas.rst').write_text('\n'.join(lines))
-          "
+          set -euo pipefail
+          python scripts/generate-schemas-rst.py \
+          sources/wms/wms/schema/openapi.json \
+          docs/_generated/wms-objects.rst \
+          --title "ewms.icecube.aq/v1/ Objects"
+
+      - name: "Generate MQS schemas RST"
+        run: |
+          set -euo pipefail
+          python scripts/generate-schemas-rst.py \
+            sources/mqs/mqs/openapi.json \
+            docs/_generated/mqs-objects.rst \
+            --title "ewms.icecube.aq/v1/mqs Objects"
 
       - name: Build docs
         run: |
