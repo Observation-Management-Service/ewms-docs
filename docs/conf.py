@@ -24,7 +24,6 @@ exclude_patterns = [
 
 html_static_path = ["_static"]
 html_css_files = ["ewms-banner.css", "ewms-nav.css"]
-html_js_files = ["ewms-nav.js"]
 
 html_theme_options = {
     "collapse_navigation": False,
