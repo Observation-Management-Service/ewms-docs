@@ -97,6 +97,9 @@
 }
 
 /* Actual current page/link: solid blue for l3/l4. */
+.wy-menu-vertical li.toctree-l1.current > ul a.current,
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul a.current,
+.wy-menu-vertical li.current > ul a.current,
 .wy-menu-vertical li.toctree-l3.current > a,
 .wy-menu-vertical li.toctree-l3.current > a:hover,
 .wy-menu-vertical li.toctree-l4.current > a,
