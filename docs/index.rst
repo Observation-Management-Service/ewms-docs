@@ -4,7 +4,7 @@
 .. toctree::
    :hidden:
    :includehidden:
-   :maxdepth: 2
+   :maxdepth: 10
    :caption: EWMS
 
    Overview <self>

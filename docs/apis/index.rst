@@ -3,7 +3,7 @@ APIs
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 10
 
-   Workflow Management Service <wms>
-   Message Queue Service <mqs>
+   Main REST Endpoints <wms>
+   Message-Passing REST Endpoints <mqs>

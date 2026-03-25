@@ -3,6 +3,6 @@ Public Libraries
 
 .. toctree::
    :hidden:
-   :maxdepth: 2
+   :maxdepth: 10
 
-   Python: oms-mqclient <mqclient>
+   oms-mqclient (Python) <mqclient>
