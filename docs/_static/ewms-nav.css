@@ -1,0 +1,3 @@
+.wy-menu-vertical li.ewms-force-open > ul {
+    display: block !important;
+}
