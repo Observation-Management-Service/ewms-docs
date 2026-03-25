@@ -4,9 +4,10 @@
  * Goals:
  * - keep first-level branches open
  * - hide RTD +/- controls
- * - make non-current expanded groups recede without looking disabled
- * - remove extra outlines/rails around sibling sections
- * - keep strongest emphasis on the current branch/page
+ * - preserve the dark RTD rail
+ * - keep section headers dark
+ * - use muted light backgrounds only for expanded child groups
+ * - reserve strongest emphasis for the current page
  */
 
 /* Hide RTD expand/collapse glyphs. */
@@ -19,86 +20,83 @@
     display: block !important;
 }
 
-/* Keep top-level labels close to stock RTD. */
+/* Keep the dark rail clean. */
+.wy-menu-vertical li.toctree-l1,
+.wy-menu-vertical li.toctree-l2,
+.wy-menu-vertical li.toctree-l3 {
+    border: none;
+    box-shadow: none;
+}
+
+/* Top-level section headers should stay dark like stock RTD. */
 .wy-menu-vertical li.toctree-l1 > a {
-    border-top: none;
-}
-
-/* Section captions should not feel boxed in. */
-.wy-menu-vertical p.caption {
-    border-top: none;
-    margin-top: 0;
-    padding-top: 0.5rem;
-}
-
-/* --------------------------------------------------------------------------
-   Non-current expanded branches:
-   muted light surface, dark readable text, no borders/rails/shadows.
-   -------------------------------------------------------------------------- */
-.wy-menu-vertical li.toctree-l1.ewms-force-open > ul {
-    background: #d7d9dd;
-    border: none;
-    box-shadow: none;
-    margin: 0;
-    padding: 0.15rem 0 0.3rem 0;
-}
-
-.wy-menu-vertical li.toctree-l1.ewms-force-open > ul li {
-    border: none;
-    box-shadow: none;
-    margin: 0;
-}
-
-.wy-menu-vertical li.toctree-l1.ewms-force-open > ul a {
     background: transparent;
-    color: #2b3137;
-    font-weight: 400;
+    color: #fcfcfc;
+    border: none;
+    box-shadow: none;
+    font-weight: 500;
 }
 
-.wy-menu-vertical li.toctree-l1.ewms-force-open > ul a:hover {
-    background: rgba(0, 0, 0, 0.05);
-    color: #11161c;
+/* Hover for top-level section headers. */
+.wy-menu-vertical li.toctree-l1 > a:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
 }
 
-/* --------------------------------------------------------------------------
-   Current top-level branch:
-   slightly stronger than sibling branches, but not dramatically brighter.
-   -------------------------------------------------------------------------- */
+/* Current top-level section: still dark, just with a small accent. */
 .wy-menu-vertical li.toctree-l1.current > a,
 .wy-menu-vertical li.toctree-l1.current > a:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
     color: #ffffff;
     font-weight: 600;
     box-shadow: inset 3px 0 0 #2980b9;
 }
 
+/* Expanded child groups: muted light surface, but not a bright card. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul,
 .wy-menu-vertical li.toctree-l1.current > ul {
-    background: #cfd3d8;
+    background: #c9ced4;
+    margin: 0;
+    padding: 0.15rem 0 0.3rem 0;
+    border: none;
+    box-shadow: none;
+}
+
+/* Child items inside expanded groups. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul li,
+.wy-menu-vertical li.toctree-l1.current > ul li {
     border: none;
     box-shadow: none;
     margin: 0;
-    padding: 0.15rem 0 0.3rem 0;
 }
 
+/* Default child links: dark readable text, no fake disabled look. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul a,
 .wy-menu-vertical li.toctree-l1.current > ul a {
-    color: #222a31;
+    background: transparent;
+    color: #1f2933;
+    font-weight: 400;
 }
 
-/* --------------------------------------------------------------------------
-   Current page:
-   this should be the clearest visual anchor.
-   -------------------------------------------------------------------------- */
-.wy-menu-vertical li.current ul li.current > a,
-.wy-menu-vertical li.current ul li.current > a:hover,
+/* Hover inside open groups. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul a:hover,
+.wy-menu-vertical li.toctree-l1.current > ul a:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #111827;
+}
+
+/* Current page: strongest emphasis in the whole sidebar. */
 .wy-menu-vertical a.current,
-.wy-menu-vertical a.current:hover {
-    background: #bcc5cf;
-    color: #11161c;
+.wy-menu-vertical a.current:hover,
+.wy-menu-vertical li.current ul li.current > a,
+.wy-menu-vertical li.current ul li.current > a:hover {
+    background: #b8c1cb;
+    color: #111827;
     font-weight: 600;
     box-shadow: inset 3px 0 0 #2980b9;
 }
 
-/* Deeper nested items: calmer spacing. */
+/* Deeper nested links should stay slightly quieter. */
 .wy-menu-vertical li.toctree-l2 > a,
 .wy-menu-vertical li.toctree-l3 > a {
     padding-top: 0.35rem;
@@ -106,14 +104,16 @@
     line-height: 1.35;
 }
 
-/* Remove extra separators/boxes inside open groups. */
+/* Remove boxy separators. */
 .wy-menu-vertical li.toctree-l1 > ul > li,
 .wy-menu-vertical li.toctree-l2 > ul > li {
-    margin-bottom: 0;
     border: none;
+    margin-bottom: 0;
 }
 
-/* Keep the dark rail clean. */
-.wy-menu-vertical li.toctree-l1 {
-    border-bottom: none;
+/* Keep captions unboxed too. */
+.wy-menu-vertical p.caption {
+    border: none;
+    margin-top: 0;
+    padding-top: 0.5rem;
 }
