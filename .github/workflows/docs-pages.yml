@@ -9,7 +9,7 @@ concurrency:
 
 on:
   schedule:
-    - cron: '17 */6 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       wms_ref:
