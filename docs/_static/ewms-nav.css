@@ -4,9 +4,9 @@
  * Goals:
  * - keep first-level branches open
  * - hide RTD +/- controls
- * - make non-current expanded groups recede
- * - reserve strongest emphasis for the current branch/page
- * - stay visually close to the stock RTD theme
+ * - make non-current expanded groups recede without looking disabled
+ * - remove extra outlines/rails around sibling sections
+ * - keep strongest emphasis on the current branch/page
  */
 
 /* Hide RTD expand/collapse glyphs. */
@@ -14,80 +14,91 @@
     display: none !important;
 }
 
-/* Top-level section labels. */
-.wy-menu-vertical li.toctree-l1 > a {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Force-open branches remain visible. */
+/* Keep first-level forced-open branches visible. */
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul {
     display: block !important;
 }
 
+/* Keep top-level labels close to stock RTD. */
+.wy-menu-vertical li.toctree-l1 > a {
+    border-top: none;
+}
+
+/* Section captions should not feel boxed in. */
+.wy-menu-vertical p.caption {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0.5rem;
+}
+
 /* --------------------------------------------------------------------------
    Non-current expanded branches:
-   keep them open, but make them feel like part of the rail rather than cards.
+   muted light surface, dark readable text, no borders/rails/shadows.
    -------------------------------------------------------------------------- */
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul {
-    background: transparent;
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
-    margin: 0 0 0 1rem;
-    padding: 0.2rem 0 0.35rem 0.45rem;
+    background: #d7d9dd;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0.15rem 0 0.3rem 0;
+}
+
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul li {
+    border: none;
+    box-shadow: none;
+    margin: 0;
 }
 
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul a {
     background: transparent;
-    color: #d2d8de;
+    color: #2b3137;
     font-weight: 400;
 }
 
 .wy-menu-vertical li.toctree-l1.ewms-force-open > ul a:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
+    background: rgba(0, 0, 0, 0.05);
+    color: #11161c;
 }
 
 /* --------------------------------------------------------------------------
    Current top-level branch:
-   slightly stronger container plus a thin left accent.
+   slightly stronger than sibling branches, but not dramatically brighter.
    -------------------------------------------------------------------------- */
 .wy-menu-vertical li.toctree-l1.current > a,
 .wy-menu-vertical li.toctree-l1.current > a:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
-    box-shadow: inset 3px 0 0 #2980b9;
     font-weight: 600;
+    box-shadow: inset 3px 0 0 #2980b9;
 }
 
 .wy-menu-vertical li.toctree-l1.current > ul {
-    background: transparent;
-    border-left: 2px solid rgba(41, 128, 185, 0.6);
-    margin: 0 0 0 1rem;
-    padding: 0.2rem 0 0.35rem 0.45rem;
+    background: #cfd3d8;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0.15rem 0 0.3rem 0;
 }
 
-/* Current branch children should be a bit stronger than sibling branches. */
 .wy-menu-vertical li.toctree-l1.current > ul a {
-    color: #e5ebf0;
+    color: #222a31;
 }
 
 /* --------------------------------------------------------------------------
    Current page:
-   this should be the clearest visual anchor in the whole sidebar.
+   this should be the clearest visual anchor.
    -------------------------------------------------------------------------- */
 .wy-menu-vertical li.current ul li.current > a,
 .wy-menu-vertical li.current ul li.current > a:hover,
 .wy-menu-vertical a.current,
 .wy-menu-vertical a.current:hover {
-    background: rgba(255, 255, 255, 0.10);
-    color: #ffffff;
+    background: #bcc5cf;
+    color: #11161c;
     font-weight: 600;
     box-shadow: inset 3px 0 0 #2980b9;
 }
 
-/* --------------------------------------------------------------------------
-   Nested descendants:
-   keep them lighter and tighter so they do not overpower the main tree.
-   -------------------------------------------------------------------------- */
+/* Deeper nested items: calmer spacing. */
 .wy-menu-vertical li.toctree-l2 > a,
 .wy-menu-vertical li.toctree-l3 > a {
     padding-top: 0.35rem;
@@ -95,15 +106,14 @@
     line-height: 1.35;
 }
 
-/* Remove boxy spacing between items. */
+/* Remove extra separators/boxes inside open groups. */
 .wy-menu-vertical li.toctree-l1 > ul > li,
 .wy-menu-vertical li.toctree-l2 > ul > li {
     margin-bottom: 0;
+    border: none;
 }
 
-/* Make section captions read as structure, not selectable content. */
-.wy-menu-vertical p.caption {
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
-    margin-top: 0;
-    padding-top: 0.5rem;
+/* Keep the dark rail clean. */
+.wy-menu-vertical li.toctree-l1 {
+    border-bottom: none;
 }
