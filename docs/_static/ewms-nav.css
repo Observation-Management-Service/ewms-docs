@@ -86,17 +86,23 @@
     color: #ffffff !important;
 }
 
-/* Actual current page/link: strongest emphasis in the sidebar.
-   Do NOT apply this to top-level section headers. */
+/* Active l2 section parent: accent bar only, no fill.
+   Distinguishes the section header from the actual current page. */
 .wy-menu-vertical li.toctree-l2.current > a,
-.wy-menu-vertical li.toctree-l2.current > a:hover,
+.wy-menu-vertical li.toctree-l2.current > a:hover {
+    background: transparent !important;
+    color: #f5f5f5 !important;
+    font-weight: 600 !important;
+    box-shadow: inset 3px 0 0 #2980b9 !important;
+}
+
+/* Actual current page/link: filled highlight for l3/l4.
+   Do NOT apply this to top-level section headers. */
 .wy-menu-vertical li.toctree-l3.current > a,
 .wy-menu-vertical li.toctree-l3.current > a:hover,
 .wy-menu-vertical li.toctree-l4.current > a,
-.wy-menu-vertical li.toctree-l4.current > a:hover,
-.wy-menu-vertical li.current ul li.current > a,
-.wy-menu-vertical li.current ul li.current > a:hover {
-    background: rgba(41, 128, 185, 0.35) !important;  /* blue tint, clearly visible */
+.wy-menu-vertical li.toctree-l4.current > a:hover {
+    background: rgba(41, 128, 185, 0.35) !important;
     color: #ffffff !important;
     font-weight: 600 !important;
     box-shadow: inset 3px 0 0 #2980b9 !important;
