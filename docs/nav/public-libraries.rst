@@ -5,4 +5,4 @@ Public Libraries
    :hidden:
    :maxdepth: 2
 
-   Message Queue Client | `oms-mqclient` <../mqclient/index>
+   Python: oms-mqclient <../mqclient/index>
