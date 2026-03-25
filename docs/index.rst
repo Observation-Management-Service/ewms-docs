@@ -3,12 +3,27 @@
 
 .. toctree::
    :hidden:
-   :includehidden:
-   :maxdepth: 10
-   :caption: EWMS
+   :caption: APIs
 
-   Overview <self>
-   apis/index
-   services/index
-   libraries/index
-   internal/index
+   apis/wms
+   apis/mqs
+
+.. toctree::
+   :hidden:
+   :caption: Services
+
+   services/wms
+   services/mqs
+
+.. toctree::
+   :hidden:
+   :caption: Client Libraries
+
+   libraries/mqclient
+
+.. toctree::
+   :hidden:
+   :caption: Internal Components
+
+   internal/tms
+   internal/pilot
