@@ -9,9 +9,21 @@ import textwrap
 def main() -> None:
     """Parse args and write the RST file."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("spec", type=pathlib.Path, help="Path to openapi.json")
-    parser.add_argument("output", type=pathlib.Path, help="Path to output .rst file")
-    parser.add_argument("--title", default="API Schemas", help="Page title")
+    parser.add_argument(
+        "spec",
+        type=pathlib.Path,
+        help="Path to openapi.json",
+    )
+    parser.add_argument(
+        "output",
+        type=pathlib.Path,
+        help="Path to output .rst file",
+    )
+    parser.add_argument(
+        "--title",
+        default="API Schemas",
+        help="Page title",
+    )
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text())
@@ -44,6 +56,7 @@ def main() -> None:
                 lines.append(f"     - {pdesc}")
         lines.append("")
 
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text("\n".join(lines))
 
 
