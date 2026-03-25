@@ -166,7 +166,7 @@ jobs:
       - name: "Generate WMS schemas RST"
         run: |
           set -euo pipefail
-          python scripts/generate-schemas-rst.py \
+          python scripts/generate_api_objects_rst.py \
           sources/wms/wms/schema/openapi.json \
           docs/_generated/wms-objects.rst \
           --title "ewms.icecube.aq/v1/ Objects"
@@ -174,7 +174,7 @@ jobs:
       - name: "Generate MQS schemas RST"
         run: |
           set -euo pipefail
-          python scripts/generate-schemas-rst.py \
+          python scripts/generate_api_objects_rst.py \
             sources/mqs/mqs/openapi.json \
             docs/_generated/mqs-objects.rst \
             --title "ewms.icecube.aq/v1/mqs Objects"
