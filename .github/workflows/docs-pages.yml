@@ -169,7 +169,7 @@ jobs:
           python scripts/generate_api_objects_rst.py \
           sources/wms/wms/schema/openapi.json \
           docs/_generated/wms-objects.rst \
-          --title "ewms.icecube.aq/v1/ Objects"
+          --title "API Objects"
 
       - name: "Generate MQS schemas RST"
         run: |
@@ -177,7 +177,7 @@ jobs:
           python scripts/generate_api_objects_rst.py \
             sources/mqs/mqs/openapi.json \
             docs/_generated/mqs-objects.rst \
-            --title "ewms.icecube.aq/v1/mqs Objects"
+            --title "API Objects"
 
       - name: Build docs
         run: |
