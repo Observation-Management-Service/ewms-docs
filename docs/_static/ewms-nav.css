@@ -1,3 +1,24 @@
-.wy-menu-vertical li.ewms-force-open > ul {
+/* Hide RTD expand/collapse controls. */
+.wy-menu-vertical .toctree-expand {
+    display: none !important;
+}
+
+/* Keep top-level sections open. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul {
     display: block !important;
+}
+
+/* Make force-open sections look like normal open sections. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul {
+    background: #e3e3e3;
+}
+
+/* Match link styling inside the opened section body. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul a {
+    color: #404040;
+}
+
+/* Optional: tighten the spacing a bit so it looks closer to the native open branch. */
+.wy-menu-vertical li.toctree-l1.ewms-force-open > ul li {
+    margin-bottom: 0;
 }
