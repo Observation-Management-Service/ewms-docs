@@ -41,8 +41,10 @@
 /* Active top-level section: keep dark, add only a thin accent. */
 .wy-menu-vertical li.toctree-l1.current > a,
 .wy-menu-vertical li.toctree-l1.current > a:hover {
+    background: transparent !important;
+    color: #f5f5f5 !important;
     box-shadow: inset 3px 0 0 #2980b9 !important;
-    font-weight: 600;
+    font-weight: 600 !important;
 }
 
 /* Open first-level groups: keep the container dark too. */
@@ -59,7 +61,8 @@
 .wy-menu-vertical li.toctree-l1.current > ul > li,
 .wy-menu-vertical li.current > ul > li,
 .wy-menu-vertical li.toctree-l2,
-.wy-menu-vertical li.toctree-l3 {
+.wy-menu-vertical li.toctree-l3,
+.wy-menu-vertical li.toctree-l4 {
     background: transparent !important;
     margin: 0 !important;
 }
@@ -99,7 +102,8 @@
 
 /* Nested descendants: calm spacing. */
 .wy-menu-vertical li.toctree-l2 > a,
-.wy-menu-vertical li.toctree-l3 > a {
+.wy-menu-vertical li.toctree-l3 > a,
+.wy-menu-vertical li.toctree-l4 > a {
     padding-top: 0.35rem;
     padding-bottom: 0.35rem;
     line-height: 1.35;
