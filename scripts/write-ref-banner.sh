@@ -3,23 +3,22 @@ set -euo pipefail
 #!/usr/bin/env bash
 
 # Write a Sphinx include file that shows a warning banner when a checked-out repo
-# is pinned to an exact Git tag during a manual docs build.
+# is pinned to a specific ref during a manual docs build.
 
 ########################################################################
 # Validate arguments.
 #
 # Usage:
-#   scripts/write-ref-banner.sh <repo-dir> <service-name> <requested-ref> <out-file>
+#   scripts/write-ref-banner.sh <service-name> <requested-ref> <out-file>
 ########################################################################
 
-if [[ $# -ne 4 ]]; then
-    echo "Usage: $0 <repo-dir> <service-name> <requested-ref> <out-file>" >&2
+if [[ $# -ne 3 ]]; then
+    echo "Usage: $0 <service-name> <requested-ref> <out-file>" >&2
     exit 2
 else
-    repo_dir="$1"
-    service_name="$2"
-    requested_ref="$3"
-    out_file="$4"
+    service_name="$1"
+    requested_ref="$2"
+    out_file="$3"
 fi
 
 ########################################################################
@@ -34,24 +33,10 @@ else
 fi
 
 ########################################################################
-# Ensure the output directory exists and the output file starts empty.
+# Ensure the output directory exists.
 ########################################################################
 
-out_dir="$(dirname "$out_file")"
-mkdir -p "$out_dir"
-echo -n > "$out_file"
-
-########################################################################
-# Detect whether the checked-out commit is exactly a Git tag.
-########################################################################
-
-tag="$(git -C "$repo_dir" describe --tags --exact-match 2>/dev/null || true)"
-
-if [[ -z "$tag" ]]; then
-    exit 0
-else
-    :
-fi
+mkdir -p "$(dirname "$out_file")"
 
 ########################################################################
 # Write the Sphinx include file.
@@ -61,6 +46,6 @@ cat > "$out_file" <<EOF
 .. raw:: html
 
    <div class="ewms-ref-banner">
-       This page was built from <strong>$service_name tag <code>$tag</code></strong>, not the default branch.
+       This page was built from <strong>$service_name ref <code>$requested_ref</code></strong>, not the default branch.
    </div>
 EOF

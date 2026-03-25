@@ -72,7 +72,6 @@ jobs:
         run: |
           set -euo pipefail
           scripts/write-ref-banner.sh \
-              sources/wms \
               WMS \
               "${{ inputs.wms_ref }}" \
               docs/_generated/wms-ref-banner.rst
@@ -88,7 +87,6 @@ jobs:
         run: |
           set -euo pipefail
           scripts/write-ref-banner.sh \
-              sources/mqs \
               MQS \
               "${{ inputs.mqs_ref }}" \
               docs/_generated/mqs-ref-banner.rst
@@ -104,7 +102,6 @@ jobs:
         run: |
           set -euo pipefail
           scripts/write-ref-banner.sh \
-              sources/tms \
               TMS \
               "${{ inputs.tms_ref }}" \
               docs/_generated/tms-ref-banner.rst
@@ -120,7 +117,6 @@ jobs:
         run: |
           set -euo pipefail
           scripts/write-ref-banner.sh \
-              sources/mqclient \
               MQClient \
               "${{ inputs.mqclient_ref }}" \
               docs/_generated/mqclient-ref-banner.rst
@@ -136,7 +132,6 @@ jobs:
         run: |
           set -euo pipefail
           scripts/write-ref-banner.sh \
-              sources/pilot \
               Pilot \
               "${{ inputs.pilot_ref }}" \
               docs/_generated/pilot-ref-banner.rst
