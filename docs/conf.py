@@ -10,13 +10,13 @@ html_theme = 'sphinx_rtd_theme'
 
 project = 'Event Workflow Management Service'
 author = 'WIPAC Developers'
-copyright = '%Y, WIPAC Developers'
-
-version = '0.1'
-release = '0.1.0'
+html_show_copyright = False
 
 html_title = 'Event Workflow Management Service'
 html_short_title = 'EWMS'
+
+html_last_updated_fmt = '%Y-%m-%d %H:%M UTC'
+html_last_updated_use_utc = True
 
 exclude_patterns = [
     '_build',
