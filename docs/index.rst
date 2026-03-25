@@ -8,7 +8,7 @@
    :caption: EWMS
 
    Overview <self>
-   APIs <nav/apis>
-   Services <nav/services>
-   Public Libraries <nav/public-libraries>
-   Internal Services <nav/internal-services>
+   APIs <apis/index>
+   Services <services/index>
+   Public Libraries <libraries/index>
+   Internal Services <internal/index>

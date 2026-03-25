@@ -5,4 +5,6 @@
 
 .. toctree::
    :hidden:
-   :maxdepth: 2
+   :maxdepth: 1
+
+   API Reference <../apis/mqs>
