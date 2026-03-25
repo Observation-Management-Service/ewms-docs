@@ -22,6 +22,9 @@ exclude_patterns = [
     '_build',
 ]
 
+html_static_path = ['_static']
+html_css_files = ['ewms.css']
+
 html_theme_options = {
     'collapse_navigation': False,
     'navigation_depth': 4,
