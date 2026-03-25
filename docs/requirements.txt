@@ -1,4 +1,5 @@
-sphinx
 myst-parser
-sphinxcontrib-openapi
+sphinx
 sphinx-rtd-theme
+sphinxcontrib-openapi
+sphinxcontrib-redoc

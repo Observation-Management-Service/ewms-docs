@@ -5,6 +5,19 @@ extensions = [
     'sphinx_rtd_theme',
 ]
 
+redoc = [
+    {
+        "name": "WMS API Schemas",
+        "page": "apis/wms-schemas",
+        "spec": "../sources/wms/wms/schema/openapi.json",
+        "embed": True,
+        "opts": {
+            "hide-hostname": True,
+            "required-props-first": True,
+        },
+    }
+]
+
 root_doc = 'index'
 html_theme = 'sphinx_rtd_theme'
 
