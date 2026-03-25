@@ -2,21 +2,7 @@ extensions = [
     'myst_parser',
     'sphinx.ext.githubpages',
     'sphinxcontrib.openapi',
-    'sphinxcontrib.redoc',
     'sphinx_rtd_theme',
-]
-
-redoc = [
-    {
-        "name": "WMS API Schemas",
-        "page": "apis/wms-schemas",
-        "spec": "../sources/wms/wms/schema/openapi.json",
-        "embed": True,
-        "opts": {
-            "hide-hostname": True,
-            "required-props-first": True,
-        },
-    }
 ]
 
 root_doc = 'index'

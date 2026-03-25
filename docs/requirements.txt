@@ -1,6 +1,4 @@
 myst-parser
-setuptools
 sphinx
 sphinx-rtd-theme
 sphinxcontrib-openapi
-sphinxcontrib-redoc
