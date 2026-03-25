@@ -5,5 +5,5 @@ Services
    :hidden:
    :maxdepth: 2
 
-   Workflow Management Service | WMS <wms>
-   Message Queue Service | MQS <mqs>
+   Workflow Management Service <wms>
+   Message Queue Service <mqs>
