@@ -171,27 +171,28 @@ jobs:
       - name: "Generate WMS schemas ReDoc page"
         run: |
           python -c "
-          import json, pathlib
-          spec = pathlib.Path('sources/wms/wms/schema/openapi.json').read_text()
-          html = '''<!DOCTYPE html>
+          import pathlib, json
+          spec = json.loads(pathlib.Path('sources/wms/wms/schema/openapi.json').read_text())
+          spec_json = json.dumps(spec)
+          html = f'''<!DOCTYPE html>
           <html>
             <head>
               <title>WMS API Schemas</title>
               <meta charset=\"utf-8\"/>
               <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-              <link href=\"https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700\" rel=\"stylesheet\">
-              <style>body { margin: 0; padding: 0; }</style>
+              <style>body{{margin:0;padding:0}}</style>
             </head>
             <body>
-              <redoc spec-url=\"../wms-openapi.json\" required-props-first=\"true\" hide-hostname=\"true\"></redoc>
+              <div id=\"redoc-container\"></div>
               <script src=\"https://cdn.jsdelivr.net/npm/redoc@2.1.5/bundles/redoc.standalone.js\"></script>
+              <script>
+                Redoc.init({spec_json}, {{requiredPropsFirst: true, hideHostname: true}}, document.getElementById(\"redoc-container\"))
+              </script>
             </body>
           </html>'''
-          out = pathlib.Path('docs/_build/html/apis')
-          out.mkdir(parents=True, exist_ok=True)
-          (out / 'wms-schemas.html').write_text(html)
-          import shutil
-          shutil.copy('sources/wms/wms/schema/openapi.json', 'docs/_build/html/wms-openapi.json')
+          out_dir = pathlib.Path('docs/_build/html/apis')
+          out_dir.mkdir(parents=True, exist_ok=True)
+          (out_dir / 'wms-schemas.html').write_text(html)
           "
 
       - uses: actions/upload-pages-artifact@v4
