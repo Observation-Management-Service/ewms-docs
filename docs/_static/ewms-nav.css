@@ -86,18 +86,17 @@
     color: #ffffff !important;
 }
 
-/* Active l2 section parent: accent bar only, no fill.
-   Distinguishes the section header from the actual current page. */
+/* Active l2 section parent: dim fill to show "you are in this section"
+   without competing with the actual current page highlight. */
 .wy-menu-vertical li.toctree-l2.current > a,
 .wy-menu-vertical li.toctree-l2.current > a:hover {
-    background: transparent !important;
+    background: rgba(41, 128, 185, 0.18) !important;
     color: #f5f5f5 !important;
     font-weight: 600 !important;
     box-shadow: inset 3px 0 0 #2980b9 !important;
 }
 
-/* Actual current page/link: filled highlight for l3/l4.
-   Do NOT apply this to top-level section headers. */
+/* Actual current page/link: stronger fill for l3/l4. */
 .wy-menu-vertical li.toctree-l3.current > a,
 .wy-menu-vertical li.toctree-l3.current > a:hover,
 .wy-menu-vertical li.toctree-l4.current > a,
