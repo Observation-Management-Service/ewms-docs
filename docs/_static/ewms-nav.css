@@ -81,9 +81,14 @@
     color: #ffffff !important;
 }
 
-/* Actual current page/link: strongest emphasis in the sidebar. */
-.wy-menu-vertical a.current,
-.wy-menu-vertical a.current:hover,
+/* Actual current page/link: strongest emphasis in the sidebar.
+   Do NOT apply this to top-level section headers. */
+.wy-menu-vertical li.toctree-l2.current > a,
+.wy-menu-vertical li.toctree-l2.current > a:hover,
+.wy-menu-vertical li.toctree-l3.current > a,
+.wy-menu-vertical li.toctree-l3.current > a:hover,
+.wy-menu-vertical li.toctree-l4.current > a,
+.wy-menu-vertical li.toctree-l4.current > a:hover,
 .wy-menu-vertical li.current ul li.current > a,
 .wy-menu-vertical li.current ul li.current > a:hover {
     background: rgba(255, 255, 255, 0.10) !important;
