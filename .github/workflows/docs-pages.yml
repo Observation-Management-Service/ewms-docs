@@ -168,7 +168,7 @@ jobs:
           set -euo pipefail
           python scripts/generate_api_objects_rst.py \
           _runtime_sources/wms/wms/schema/openapi.json \
-          docs/apis/_generated_from_openapi/wms-objects.rst \
+          docs/apis/_generated/wms-objects.rst \
           --title "Object Glossary" \
           --include "/_generated_banners/wms-ref-banner.rst"
 
@@ -177,7 +177,7 @@ jobs:
           set -euo pipefail
           python scripts/generate_api_objects_rst.py \
             _runtime_sources/mqs/mqs/openapi.json \
-            docs/apis/_generated_from_openapi/mqs-objects.rst \
+            docs/apis/_generated/mqs-objects.rst \
             --title "Object Glossary (mqs)" \
             --include "/_generated_banners/mqs-ref-banner.rst"
 
