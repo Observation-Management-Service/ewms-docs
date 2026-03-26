@@ -22,10 +22,9 @@ For API endpoints and object schemas, see:
    :hidden:
    :caption: APIs
 
-   apis/wms
    apis/_generated/wms-objects
+   apis/wms
    apis/mqs
-   apis/_generated/mqs-objects
 
 .. toctree::
    :hidden:
