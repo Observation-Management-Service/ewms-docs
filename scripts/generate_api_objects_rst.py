@@ -3,7 +3,17 @@
 import argparse
 import json
 import pathlib
+import re
 import textwrap
+
+# Matches both bare URLs (https://...) and backtick-wrapped URLs (`https://...`)
+# in spec descriptions, converting them to RST anonymous hyperlinks.
+_URL_RE = re.compile(r"`?(https?://[^`\s]+)`?")
+
+
+def _linkify(text: str) -> str:
+    """Convert any URLs in text to RST anonymous hyperlinks."""
+    return _URL_RE.sub(r"`\1`__", text)
 
 
 def _ref_name(schema: dict) -> str | None:
@@ -135,7 +145,7 @@ def _collect_rows(
 
     for pname, pschema in props.items():
         ptype = _resolve_type_human(pschema)
-        pdesc = pschema.get("description", "")
+        pdesc = _linkify(pschema.get("description", ""))
 
         if link := _ref_link(pschema):
             pdesc = f"{pdesc} {link}" if pdesc else link
@@ -174,7 +184,7 @@ def main() -> None:
         lines.append(name)
         lines.append("-" * len(name))
         if desc := schema.get("description"):
-            lines.append(textwrap.fill(desc, 80))
+            lines.append(textwrap.fill(_linkify(desc), 80))
         lines.append("")
         props = schema.get("properties", {})
         if props:
