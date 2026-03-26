@@ -3,7 +3,7 @@
 ewms.icecube.aq/v1/mqs
 ===========================================
 
-.. openapi:: /sources/mqs/mqs/openapi.json
+.. openapi:: ../../sources/mqs/mqs/openapi.json
    :group:
    :examples:
    :exclude:
