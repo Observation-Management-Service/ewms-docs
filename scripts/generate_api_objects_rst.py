@@ -59,13 +59,14 @@ def _expand_schema(
     if pschema.get("type") == "array":
         items = pschema.get("items", {})
         items_type = _resolve_type(items)
+        items_type_display = f"{items_type}(s)" if items_type else ""
         items_desc = items.get("description", "")
         if ref := _ref_name(items):
             items_desc = f"See ``{ref}``."
         rows.append(
             (
                 f"{_prefix(depth + 1)}``[]``",
-                items_type,
+                items_type_display,
                 items_desc,
             )
         )
