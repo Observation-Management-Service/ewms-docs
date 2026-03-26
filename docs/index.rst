@@ -51,5 +51,5 @@ For API endpoints and object schemas, see:
    :hidden:
    :caption: Publications
 
-   Event Workflow Management System: A Robust Technique for Massively Divisible and Distributed Workflows <https://dl.acm.org/doi/10.1145/3708035.3736051>
-   IceCube SkyDriver – A SaaS Solution for Event Reconstruction using the Skymap Scanner <https://www.epj-conferences.org/articles/epjconf/abs/2024/05/epjconf_chep2024_04023/epjconf_chep2024_04023.html>
+   Event Workflow Management System: A Robust Technique for Massively Divisible and Distributed Workflows (2025) <https://dl.acm.org/doi/10.1145/3708035.3736051>
+   IceCube SkyDriver – A SaaS Solution for Event Reconstruction using the Skymap Scanner (2024) <https://www.epj-conferences.org/articles/epjconf/abs/2024/05/epjconf_chep2024_04023/epjconf_chep2024_04023.html>
