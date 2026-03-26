@@ -103,6 +103,12 @@ def _collect_rows(
         if ref := _ref_name(pschema):
             see = f"See `{ref}`_."
             pdesc = f"{pdesc} {see}" if pdesc else see
+        elif pschema.get("type") == "array" and (
+            iref := _ref_name(pschema.get("items", {}))
+        ):
+            # Array whose items are a $ref — append See link on the parent row.
+            see = f"See `{iref}`_."
+            pdesc = f"{pdesc} {see}" if pdesc else see
         elif enum := pschema.get("enum"):
             enum_str = ", ".join(f"``{v}``" for v in enum)
             pdesc = f"{pdesc} One of: {enum_str}." if pdesc else f"One of: {enum_str}."
