@@ -9,4 +9,5 @@ ewms.icecube.aq/v1/mqs
    _generated/mqs-objects
 
 .. openapi:: ../../sources/mqs/mqs/openapi.json
+   :group:
    :examples:
