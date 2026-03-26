@@ -156,8 +156,10 @@ def _collect_rows(
             # Array whose items are a $ref — append See link on the parent row
             pdesc = f"{pdesc} {ilink}" if pdesc else ilink
         elif enum := pschema.get("enum"):
-            enum_str = ", ".join(f"``{v}``" for v in enum)
-            pdesc = f"{pdesc} One of: {enum_str}." if pdesc else f"One of: {enum_str}."
+            # Show enum values one per line using RST line blocks (| prefix).
+            # Continuation lines need 7 spaces to align under the opening |.
+            sep = "\n" + " " * 7 + "| "
+            ptype = "| " + sep.join(f'``"{v}"``' for v in enum)
 
         rows.append((f"{_prefix(depth)}``{field_prefix}{pname}``", ptype, pdesc))
 
