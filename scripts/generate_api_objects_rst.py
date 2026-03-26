@@ -15,20 +15,25 @@ def _ref_name(schema: dict) -> str | None:
 def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     """Return a human-readable type string for a schema.
 
-    Returns the $ref name (e.g. '``MQProfileObject``') when present, so callers
-    get a meaningful type label rather than a bare 'object'. If plural=True,
-    appends '(s)' inside any backtick wrapper (e.g. '``MQProfileObject(s)``').
+    - $ref       -> ``RefName`` (or ``RefName(s)`` if plural)
+    - array      -> 'array of X(s)' where X is the items type
+    - anyOf      -> 'type1 | type2'
+    - plain type -> 'string', 'integer', etc.
     """
     if ref := _ref_name(schema):
         return f"``{ref}(s)``" if plural else f"``{ref}``"
     ptype = schema.get("type", "")
+    if ptype == "array":
+        items = schema.get("items", {})
+        items_type = _resolve_type_human(items)
+        return f"array of {items_type}(s)" if items_type else "array"
     if not ptype and "anyOf" in schema:
         ptype = " | ".join(s.get("type", "?") for s in schema["anyOf"])
     return f"{ptype}(s)" if (plural and ptype) else ptype
 
 
 def _prefix(depth: int) -> str:
-    """Return the '> > ' prefix string for a given depth level."""
+    """Return the '> > ' depth prefix for a given nesting level."""
     return "> " * depth
 
 
@@ -39,11 +44,12 @@ def _expand_schema(
 ) -> None:
     """Expand a schema's children into rows, handling objects and arrays recursively.
 
-    Mutates rows in place. $ref children are noted as 'See <Name>' and not expanded.
+    Mutates rows in place. $ref children are noted as 'See <Name>_' and not expanded.
+    Arrays do not emit a [] row — the type column on the parent says 'array of X(s)'
+    and children of object items are prefixed with [*]. to signal per-item fields.
     """
     # Nested object with known properties
-    nested_props = pschema.get("properties", {})
-    if nested_props:
+    if nested_props := pschema.get("properties", {}):
         _collect_rows(nested_props, depth=depth + 1, rows=rows)
         return
 
@@ -60,34 +66,38 @@ def _expand_schema(
         )
         return
 
-    # Array — show items as a [] child, then recurse into items
+    # Array — no [] row; recurse into items with [*]. field prefix if object
     if pschema.get("type") == "array":
         items = pschema.get("items", {})
-        items_type_display = _resolve_type_human(items, plural=True)
-        items_desc = items.get("description", "")
-        if ref := _ref_name(items):
-            items_desc = f"See `{ref}`_."
-        rows.append(
-            (
-                f"{_prefix(depth + 1)}``[]``",
-                items_type_display,
-                items_desc,
+        if _ref_name(items):
+            return  # type column already says "array of RefName(s)", nothing to expand
+        if item_props := items.get("properties", {}):
+            _collect_rows(item_props, depth=depth + 1, rows=rows, field_prefix="[*].")
+        elif items.get("type") == "array":
+            # Array of arrays — recurse
+            _expand_schema(items, depth, rows)
+        elif items.get("type") == "object" and "additionalProperties" in items:
+            addl = items["additionalProperties"]
+            value_type = _resolve_type_human(addl) if isinstance(addl, dict) else ""
+            rows.append(
+                (
+                    f"{_prefix(depth + 1)}[*].*(any key)*",
+                    value_type,
+                    "Additional properties.",
+                )
             )
-        )
-        # Only recurse into items if they are inline (not a $ref)
-        if not _ref_name(items):
-            _expand_schema(items, depth + 1, rows)
 
 
 def _collect_rows(
     props: dict,
     depth: int = 0,
     rows: list[tuple[str, str, str]] | None = None,
+    field_prefix: str = "",
 ) -> list[tuple[str, str, str]]:
     """Recursively collect (field, type, description) rows for a properties dict.
 
-    Depth is indicated by '> ' prefixes: depth 1 = '> field', depth 2 = '> > field', etc.
-    $ref fields are noted as 'See <Name>' rather than expanded inline.
+    Depth is shown via '> ' prefixes. field_prefix is prepended to field names —
+    '[*].' when expanding array item properties to signal per-item fields.
     """
     if rows is None:
         rows = []
@@ -97,14 +107,13 @@ def _collect_rows(
         pdesc = pschema.get("description", "")
 
         if ref := _ref_name(pschema):
-            # Append "See <Name>" to whatever description the property has
             see = f"See `{ref}`_."
             pdesc = f"{pdesc} {see}" if pdesc else see
         elif enum := pschema.get("enum"):
             enum_str = ", ".join(f"``{v}``" for v in enum)
             pdesc = f"{pdesc} One of: {enum_str}." if pdesc else f"One of: {enum_str}."
 
-        rows.append((f"{_prefix(depth)}``{pname}``", ptype, pdesc))
+        rows.append((f"{_prefix(depth)}``{field_prefix}{pname}``", ptype, pdesc))
 
         # Don't recurse into $ref fields — they're documented as their own schema
         if not _ref_name(pschema):
@@ -116,21 +125,9 @@ def _collect_rows(
 def main() -> None:
     """Parse args and write the RST file."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "spec",
-        type=pathlib.Path,
-        help="Path to openapi.json",
-    )
-    parser.add_argument(
-        "output",
-        type=pathlib.Path,
-        help="Path to output .rst file",
-    )
-    parser.add_argument(
-        "--title",
-        default="API Objects",
-        help="Page title",
-    )
+    parser.add_argument("spec", type=pathlib.Path, help="Path to openapi.json")
+    parser.add_argument("output", type=pathlib.Path, help="Path to output .rst file")
+    parser.add_argument("--title", default="API Objects", help="Page title")
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text())
