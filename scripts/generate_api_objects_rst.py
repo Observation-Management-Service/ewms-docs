@@ -19,7 +19,7 @@ def _resolve_type(schema: dict) -> str:
     get a meaningful type label rather than a bare 'object'.
     """
     if ref := _ref_name(schema):
-        return ref
+        return f"`{ref}`"
     ptype = schema.get("type", "")
     if not ptype and "anyOf" in schema:
         ptype = " | ".join(s.get("type", "?") for s in schema["anyOf"])
