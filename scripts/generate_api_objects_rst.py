@@ -66,7 +66,7 @@ def _expand_schema(
         items_type_display = _resolve_type_human(items, plural=True)
         items_desc = items.get("description", "")
         if ref := _ref_name(items):
-            items_desc = f"See ``{ref}``."
+            items_desc = f"See `{ref}`_."
         rows.append(
             (
                 f"{_prefix(depth + 1)}``[]``",
@@ -98,7 +98,7 @@ def _collect_rows(
 
         if ref := _ref_name(pschema):
             # Append "See <Name>" to whatever description the property has
-            see = f"See ``{ref}``."
+            see = f"See `{ref}`_."
             pdesc = f"{pdesc} {see}" if pdesc else see
         elif enum := pschema.get("enum"):
             enum_str = ", ".join(f"``{v}``" for v in enum)
