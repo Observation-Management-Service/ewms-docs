@@ -177,7 +177,7 @@ jobs:
           python scripts/generate_api_objects_rst.py \
             sources/mqs/mqs/openapi.json \
             docs/apis/_generated/mqs-objects.rst \
-            --title "Object Glossary — MQS Endpoints"
+            --title "Object Glossary (mqs)"
 
       - name: Build docs
         run: |
