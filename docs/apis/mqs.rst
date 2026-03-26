@@ -3,14 +3,14 @@
 ewms.icecube.aq/v1/mqs
 ===========================================
 
+.. toctree::
+   :hidden:
+
+   _generated/mqs-objects
+
 .. openapi:: ../../_runtime_sources/mqs/mqs/openapi.json
    :group:
    :examples:
    :exclude:
       /v1/mqs$
       /mqbroker-issuer/.well-known/jwks.json$
-
-
-.. toctree::
-   :hidden:
-   mqs-objects
