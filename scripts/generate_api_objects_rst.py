@@ -13,9 +13,13 @@ def _ref_name(schema: dict) -> str | None:
 
 
 def _resolve_type(schema: dict) -> str:
-    """Return a human-readable type string for a schema."""
-    if _ref_name(schema):
-        return "object"
+    """Return a human-readable type string for a schema.
+
+    Returns the $ref name (e.g. 'MQProfileObject') when present, so callers
+    get a meaningful type label rather than a bare 'object'.
+    """
+    if ref := _ref_name(schema):
+        return ref
     ptype = schema.get("type", "")
     if not ptype and "anyOf" in schema:
         ptype = " | ".join(s.get("type", "?") for s in schema["anyOf"])
