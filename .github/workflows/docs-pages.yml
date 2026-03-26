@@ -54,7 +54,7 @@ jobs:
       - name: Initialize "ref" banner include files — needed even if empty for build to succeed
         run: |
           set -euo pipefail
-          mkdir -p docs/_generated
+          mkdir -p docs/_generated_banners
           echo -n > docs/_generated_banners/wms-ref-banner.rst
           echo -n > docs/_generated_banners/mqs-ref-banner.rst
           echo -n > docs/_generated_banners/tms-ref-banner.rst
