@@ -23,7 +23,11 @@ exclude_patterns = [
 ]
 
 html_static_path = ["_static"]
-html_css_files = ["ewms-banner.css", "ewms-nav.css"]
+html_css_files = [
+    "ewms.css",
+    "ewms-banner.css",
+    "ewms-nav.css",
+]
 
 html_theme_options = {
     "collapse_navigation": False,
