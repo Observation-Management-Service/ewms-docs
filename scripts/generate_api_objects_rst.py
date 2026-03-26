@@ -22,14 +22,18 @@ def _ref_link(schema: dict) -> str | None:
     ref = schema.get("$ref", "")
     if not ref:
         return None
+    # e.g. ['components', 'schemas', 'SchemaName'] or
+    #      ['components', 'schemas', 'SchemaName', 'properties', 'fieldName']
     parts = ref.lstrip("#/").split("/")
-    # parts: ['components', 'schemas', 'SchemaName', ...]
+    # Need at least components/schemas/Name to be a valid ref
     if len(parts) < 3:
         return None
     schema_name = parts[2]
+    # Exactly 3 parts = top-level schema ref
     if len(parts) == 3:
         return f"See `{schema_name}`_."
-    # Deep ref — link to top-level schema, note the sub-field
+    # More than 3 parts = deep ref into a sub-field — link to the top-level schema
+    # and note which field it points to
     field_name = parts[-1]
     return f"See `{schema_name}`_ (``{field_name}`` field)."
 
@@ -45,13 +49,15 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     """
     ref = schema.get("$ref", "")
     if ref:
+        # e.g. ['components', 'schemas', 'SchemaName', ...]
         parts = ref.lstrip("#/").split("/")
+        # Exactly 3 parts = top-level schema ref with a usable name
         if len(parts) == 3:
-            # Top-level schema ref
             name = parts[2]
             return f"``{name}(s)``" if plural else f"``{name}``"
         else:
-            # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — no clean name
+            # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — no clean
+            # type name to show; fall back to 'object'
             return "object"
     ptype = schema.get("type", "")
     if ptype == "array":
@@ -75,7 +81,7 @@ def _expand_schema(
 ) -> None:
     """Expand a schema's children into rows, handling objects and arrays recursively.
 
-    Mutates rows in place. $ref children are noted as 'See <Name>_' and not expanded.
+    Mutates rows in place. $ref children are noted as 'See <n>_' and not expanded.
     Arrays do not emit a [] row — the type column on the parent says 'array of X(s)'
     and children of object items are prefixed with [*]. to signal per-item fields.
     """
@@ -136,7 +142,7 @@ def _collect_rows(
         elif pschema.get("type") == "array" and (
             ilink := _ref_link(pschema.get("items", {}))
         ):
-            # Array whose items are a $ref — append See link on the parent row.
+            # Array whose items are a $ref — append See link on the parent row
             pdesc = f"{pdesc} {ilink}" if pdesc else ilink
         elif enum := pschema.get("enum"):
             enum_str = ", ".join(f"``{v}``" for v in enum)
