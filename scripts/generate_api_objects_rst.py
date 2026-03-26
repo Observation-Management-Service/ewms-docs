@@ -8,7 +8,7 @@ import textwrap
 
 # Matches both bare URLs (https://...) and backtick-wrapped URLs (`https://...`)
 # in spec descriptions, converting them to RST anonymous hyperlinks.
-_URL_RE = re.compile(r"`?(https?://[^`\s]+)`?")
+_URL_RE = re.compile(r"(https?://[^`\s]+)")
 
 
 def _linkify(text: str) -> str:
