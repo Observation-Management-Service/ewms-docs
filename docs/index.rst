@@ -1,6 +1,6 @@
-Event Workflow Management System (EWMS)
+Event Workflow Management System — EWMS
 ===============
-The Event Workflow Management System (EWMS) project improves task scheduling and management by integrating fine-grained event handling with large-scale scientific computing.
+The Event Workflow Management System improves task scheduling and management by integrating fine-grained event handling with large-scale scientific computing.
 
 EWMS is a workflow management system built on `HTCondor <https://htcondor.readthedocs.io/en/latest/>`__ designed to process billions of fine-grained events. By optimizing scheduling and fitting work units into smaller resource envelopes, it increases throughput, reduces costs, and ensures efficient data transfer pipelines.
 
