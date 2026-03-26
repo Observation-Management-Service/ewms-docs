@@ -1,4 +1,4 @@
-.. include:: /_generated/mqs-ref-banner.rst
+.. include:: /_generated_banners/mqs-ref-banner.rst
 
 ewms.icecube.aq/v1/mqs
 ===========================================

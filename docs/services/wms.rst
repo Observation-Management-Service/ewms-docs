@@ -1,4 +1,4 @@
-.. include:: /_generated/wms-ref-banner.rst
+.. include:: /_generated_banners/wms-ref-banner.rst
 
 .. Here, we rely on the imported README for the title. Including a title here would create an extra nesting in the TOC.
 

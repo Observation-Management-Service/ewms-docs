@@ -1,4 +1,4 @@
-.. include:: /_generated/wms-ref-banner.rst
+.. include:: /_generated_banners/wms-ref-banner.rst
 
 ewms.icecube.aq/v1/
 =================================================

@@ -14,7 +14,7 @@ key concepts, and example requests.
 For API endpoints and object schemas, see:
 
 - :doc:`API Endpoints <apis/wms>`
-- :doc:`Object Glossary <apis/_generated/wms-objects>`
+- :doc:`Object Glossary <apis/_generated_from_openapi/wms-objects>`
 
 
 
@@ -23,9 +23,9 @@ For API endpoints and object schemas, see:
    :caption: APIs
 
    apis/wms
-   apis/_generated/wms-objects
+   apis/_generated_from_openapi/wms-objects
    apis/mqs
-   apis/_generated/mqs-objects
+   apis/_generated_from_openapi/mqs-objects
 
 .. toctree::
    :hidden:
