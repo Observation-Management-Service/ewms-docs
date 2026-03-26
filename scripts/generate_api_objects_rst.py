@@ -4,17 +4,14 @@ import argparse
 import json
 import pathlib
 import re
-import textwrap
+
 
 # Matches bare URLs (https://...)
 # in spec descriptions, converting them to RST anonymous hyperlinks.
 # Match URLs, stopping before trailing punctuation (. , ) that ends a sentence)
-_URL_RE = re.compile(r"(https?://[^\s`]+?)([.,)]?)(?=\s|$)")
-
-
 def _linkify(text: str) -> str:
-    """Convert any URLs in text to RST anonymous hyperlinks."""
-    return _URL_RE.sub(r"`\1`__\2", text)
+    """Strip backticks around URLs — Sphinx auto-links bare https:// URLs."""
+    return re.sub(r"`(https?://[^`\s]+)`", r"\1", text)
 
 
 def _ref_name(schema: dict) -> str | None:
