@@ -3,6 +3,12 @@
 
 .. toctree::
    :hidden:
+   :caption: Getting Started
+
+   getting-started
+
+.. toctree::
+   :hidden:
    :caption: APIs
 
    apis/wms
