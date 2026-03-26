@@ -37,10 +37,13 @@ def _expand_schema(
 
     # Free-form object (additionalProperties, no fixed properties)
     if pschema.get("type") == "object" and "additionalProperties" in pschema:
+        addl = pschema["additionalProperties"]
+        # additionalProperties can be `true` (allow anything) or a schema dict
+        value_type = _resolve_type(addl) if isinstance(addl, dict) else ""
         rows.append(
             (
                 f"{parent_prefix}└─{_NBSP}*(any key)*",
-                _resolve_type(pschema["additionalProperties"]),
+                value_type,
                 "Additional properties.",
             )
         )
