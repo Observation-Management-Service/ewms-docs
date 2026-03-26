@@ -69,7 +69,7 @@ jobs:
         with:
           repository: Observation-Management-Service/ewms-workflow-management-service
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.wms_ref || '' }}
-          path: sources/wms
+          path: _runtime_sources/wms
       - name: Write WMS "ref" banner
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.wms_ref != '' }}
         run: |
@@ -84,7 +84,7 @@ jobs:
         with:
           repository: Observation-Management-Service/ewms-message-queue-service
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.mqs_ref || '' }}
-          path: sources/mqs
+          path: _runtime_sources/mqs
       - name: Write MQS "ref" banner
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mqs_ref != '' }}
         run: |
@@ -99,7 +99,7 @@ jobs:
         with:
           repository: Observation-Management-Service/ewms-task-management-service
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tms_ref || '' }}
-          path: sources/tms
+          path: _runtime_sources/tms
       - name: Write TMS "ref" banner
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.tms_ref != '' }}
         run: |
@@ -114,7 +114,7 @@ jobs:
         with:
           repository: Observation-Management-Service/MQClient
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.mqclient_ref || '' }}
-          path: sources/mqclient
+          path: _runtime_sources/mqclient
       - name: Write MQClient "ref" banner
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mqclient_ref != '' }}
         run: |
@@ -129,7 +129,7 @@ jobs:
         with:
           repository: Observation-Management-Service/ewms-pilot
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.pilot_ref || '' }}
-          path: sources/pilot
+          path: _runtime_sources/pilot
       - name: Write Pilot "ref" banner
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.pilot_ref != '' }}
         run: |
@@ -167,7 +167,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/generate_api_objects_rst.py \
-          sources/wms/wms/schema/openapi.json \
+          _runtime_sources/wms/wms/schema/openapi.json \
           docs/apis/_generated/wms-objects.rst \
           --title "Object Glossary" \
           --include "/_generated/wms-ref-banner.rst"
@@ -176,7 +176,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/generate_api_objects_rst.py \
-            sources/mqs/mqs/openapi.json \
+            _runtime_sources/mqs/mqs/openapi.json \
             docs/apis/_generated/mqs-objects.rst \
             --title "Object Glossary (mqs)" \
             --include "/_generated/mqs-ref-banner.rst"

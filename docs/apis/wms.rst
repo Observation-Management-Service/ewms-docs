@@ -3,7 +3,7 @@
 ewms.icecube.aq/v1/
 =================================================
 
-.. openapi:: ../../sources/wms/wms/schema/openapi.json
+.. openapi:: ../../_runtime_sources/wms/wms/schema/openapi.json
    :examples:
    :group:
    :exclude: /v1/$
