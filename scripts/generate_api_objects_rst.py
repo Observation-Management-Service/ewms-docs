@@ -6,11 +6,19 @@ import pathlib
 import textwrap
 
 
-def _resolve_type(pschema: dict) -> str:
-    """Return a human-readable type string for a property schema."""
-    ptype = pschema.get("type", "")
-    if not ptype and "anyOf" in pschema:
-        ptype = " | ".join(s.get("type", "?") for s in pschema["anyOf"])
+def _ref_name(schema: dict) -> str | None:
+    """Return the schema name from a $ref pointer, or None if not a $ref."""
+    ref = schema.get("$ref", "")
+    return ref.split("/")[-1] if ref else None
+
+
+def _resolve_type(schema: dict) -> str:
+    """Return a human-readable type string for a schema."""
+    if _ref_name(schema):
+        return "object"
+    ptype = schema.get("type", "")
+    if not ptype and "anyOf" in schema:
+        ptype = " | ".join(s.get("type", "?") for s in schema["anyOf"])
     return ptype
 
 
@@ -26,7 +34,7 @@ def _expand_schema(
 ) -> None:
     """Expand a schema's children into rows, handling objects and arrays recursively.
 
-    Mutates rows in place.
+    Mutates rows in place. $ref children are noted as 'See <Name>' and not expanded.
     """
     # Nested object with known properties
     nested_props = pschema.get("properties", {})
@@ -50,14 +58,20 @@ def _expand_schema(
     # Array — show items as a [] child, then recurse into items
     if pschema.get("type") == "array":
         items = pschema.get("items", {})
+        items_type = _resolve_type(items)
+        items_desc = items.get("description", "")
+        if ref := _ref_name(items):
+            items_desc = f"See ``{ref}``."
         rows.append(
             (
                 f"{_prefix(depth + 1)}``[]``",
-                _resolve_type(items),
-                items.get("description", ""),
+                items_type,
+                items_desc,
             )
         )
-        _expand_schema(items, depth + 1, rows)
+        # Only recurse into items if they are inline (not a $ref)
+        if not _ref_name(items):
+            _expand_schema(items, depth + 1, rows)
 
 
 def _collect_rows(
@@ -68,6 +82,7 @@ def _collect_rows(
     """Recursively collect (field, type, description) rows for a properties dict.
 
     Depth is indicated by '> ' prefixes: depth 1 = '> field', depth 2 = '> > field', etc.
+    $ref fields are noted as 'See <Name>' rather than expanded inline.
     """
     if rows is None:
         rows = []
@@ -76,12 +91,19 @@ def _collect_rows(
         ptype = _resolve_type(pschema)
         pdesc = pschema.get("description", "")
 
-        if enum := pschema.get("enum"):
+        if ref := _ref_name(pschema):
+            # Append "See <Name>" to whatever description the property has
+            see = f"See ``{ref}``."
+            pdesc = f"{pdesc} {see}" if pdesc else see
+        elif enum := pschema.get("enum"):
             enum_str = ", ".join(f"``{v}``" for v in enum)
             pdesc = f"{pdesc} One of: {enum_str}." if pdesc else f"One of: {enum_str}."
 
         rows.append((f"{_prefix(depth)}``{pname}``", ptype, pdesc))
-        _expand_schema(pschema, depth, rows)
+
+        # Don't recurse into $ref fields — they're documented as their own schema
+        if not _ref_name(pschema):
+            _expand_schema(pschema, depth, rows)
 
     return rows
 
