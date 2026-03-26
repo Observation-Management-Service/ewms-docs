@@ -1,3 +1,23 @@
+Event Workflow Management Service (EWMS)
+===============
+The Event Workflow Management Service (EWMS) project improves task scheduling and management by integrating fine-grained event handling with large-scale scientific computing.
+
+EWMS is a workflow management system built on `HTCondor <https://htcondor.readthedocs.io/en/latest/>`__ designed to process billions of fine-grained events. By optimizing scheduling and fitting work units into smaller resource envelopes, it increases throughput, reduces costs, and ensures efficient data transfer pipelines.
+
+Getting Started
+----------
+
+The best place to start is the :doc:`Workflow Management Service <services/wms>` page.
+This details the public-facing interface for EWMS, and covers the full workflow lifetime,
+key concepts, and example requests.
+
+For API endpoints and object schemas, see:
+
+- :doc:`API Endpoints <apis/wms>`
+- :doc:`Object Glossary <apis/_generated/wms-objects>`
+
+
+
 .. toctree::
    :hidden:
    :caption: APIs
@@ -27,21 +47,9 @@
    internal/tms
    internal/pilot
 
+.. toctree::
+   :hidden:
+   :caption: Publications
 
-Event Workflow Management Service (EWMS)
-===============
-The Event Workflow Management Service (EWMS) project improves task scheduling and management by integrating fine-grained event handling with large-scale scientific computing.
-
-EWMS is a workflow management system built on `HTCondor <https://htcondor.readthedocs.io/en/latest/>`__ designed to process billions of fine-grained events. By optimizing scheduling and fitting work units into smaller resource envelopes, it increases throughput, reduces costs, and ensures efficient data transfer pipelines.
-
-Getting Started
-----------
-
-The best place to start is the :doc:`Workflow Management Service <services/wms>` page.
-This details the public-facing interface for EWMS, and covers the full workflow lifetime,
-key concepts, and example requests.
-
-For API endpoints and object schemas, see:
-
-- :doc:`API Endpoints <apis/wms>`
-- :doc:`Object Glossary <apis/_generated/wms-objects>`
+   Event Workflow Management System: A Robust Technique for Massively Divisible and Distributed Workflows <https://dl.acm.org/doi/10.1145/3708035.3736051>
+   IceCube SkyDriver – A SaaS Solution for Event Reconstruction using the Skymap Scanner <https://www.epj-conferences.org/articles/epjconf/abs/2024/05/epjconf_chep2024_04023/epjconf_chep2024_04023.html>
