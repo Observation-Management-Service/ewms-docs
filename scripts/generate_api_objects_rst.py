@@ -12,18 +12,19 @@ def _ref_name(schema: dict) -> str | None:
     return ref.split("/")[-1] if ref else None
 
 
-def _resolve_type_human(schema: dict) -> str:
+def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     """Return a human-readable type string for a schema.
 
     Returns the $ref name (e.g. '``MQProfileObject``') when present, so callers
-    get a meaningful type label rather than a bare 'object'.
+    get a meaningful type label rather than a bare 'object'. If plural=True,
+    appends '(s)' inside any backtick wrapper (e.g. '``MQProfileObject(s)``').
     """
     if ref := _ref_name(schema):
-        return f"``{ref}``"
+        return f"``{ref}(s)``" if plural else f"``{ref}``"
     ptype = schema.get("type", "")
     if not ptype and "anyOf" in schema:
         ptype = " | ".join(s.get("type", "?") for s in schema["anyOf"])
-    return ptype
+    return f"{ptype}(s)" if (plural and ptype) else ptype
 
 
 def _prefix(depth: int) -> str:
@@ -62,8 +63,7 @@ def _expand_schema(
     # Array — show items as a [] child, then recurse into items
     if pschema.get("type") == "array":
         items = pschema.get("items", {})
-        items_type = _resolve_type_human(items)
-        items_type_display = f"{items_type}(s)" if items_type else ""
+        items_type_display = _resolve_type_human(items, plural=True)
         items_desc = items.get("description", "")
         if ref := _ref_name(items):
             items_desc = f"See ``{ref}``."
