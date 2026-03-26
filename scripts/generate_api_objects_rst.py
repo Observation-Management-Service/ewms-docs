@@ -12,16 +12,47 @@ def _ref_name(schema: dict) -> str | None:
     return ref.split("/")[-1] if ref else None
 
 
+def _ref_link(schema: dict) -> str | None:
+    """Return a human-readable 'See X_.' string for a $ref, or None if not a $ref.
+
+    Handles both top-level refs (#/components/schemas/Foo) and deep refs
+    (#/components/schemas/Foo/properties/bar), linking to the top-level schema
+    in both cases.
+    """
+    ref = schema.get("$ref", "")
+    if not ref:
+        return None
+    parts = ref.lstrip("#/").split("/")
+    # parts: ['components', 'schemas', 'SchemaName', ...]
+    if len(parts) < 3:
+        return None
+    schema_name = parts[2]
+    if len(parts) == 3:
+        return f"See `{schema_name}`_."
+    # Deep ref — link to top-level schema, note the sub-field
+    field_name = parts[-1]
+    return f"See `{schema_name}`_ (``{field_name}`` field)."
+
+
 def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     """Return a human-readable type string for a schema.
 
-    - $ref       -> ``RefName`` (or ``RefName(s)`` if plural)
-    - array      -> 'array of X(s)' where X is the items type
-    - anyOf      -> 'type1 | type2'
-    - plain type -> 'string', 'integer', etc.
+    - top-level $ref  -> ``RefName`` (or ``RefName(s)`` if plural)
+    - deep $ref       -> object (the actual type isn't a named schema)
+    - array           -> 'array of X(s)' where X is the items type
+    - anyOf           -> 'type1 | type2'
+    - plain type      -> 'string', 'integer', etc.
     """
-    if ref := _ref_name(schema):
-        return f"``{ref}(s)``" if plural else f"``{ref}``"
+    ref = schema.get("$ref", "")
+    if ref:
+        parts = ref.lstrip("#/").split("/")
+        if len(parts) == 3:
+            # Top-level schema ref
+            name = parts[2]
+            return f"``{name}(s)``" if plural else f"``{name}``"
+        else:
+            # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — no clean name
+            return "object"
     ptype = schema.get("type", "")
     if ptype == "array":
         items = schema.get("items", {})
@@ -69,7 +100,7 @@ def _expand_schema(
     # Array — no [] row; recurse into items with [*]. field prefix if object
     if pschema.get("type") == "array":
         items = pschema.get("items", {})
-        if _ref_name(items):
+        if _ref_link(items):
             return  # type column already says "array of RefName(s)", nothing to expand
         if item_props := items.get("properties", {}):
             _collect_rows(item_props, depth=depth + 1, rows=rows, field_prefix="[*].")
@@ -100,15 +131,13 @@ def _collect_rows(
         ptype = _resolve_type_human(pschema)
         pdesc = pschema.get("description", "")
 
-        if ref := _ref_name(pschema):
-            see = f"See `{ref}`_."
-            pdesc = f"{pdesc} {see}" if pdesc else see
+        if link := _ref_link(pschema):
+            pdesc = f"{pdesc} {link}" if pdesc else link
         elif pschema.get("type") == "array" and (
-            iref := _ref_name(pschema.get("items", {}))
+            ilink := _ref_link(pschema.get("items", {}))
         ):
             # Array whose items are a $ref — append See link on the parent row.
-            see = f"See `{iref}`_."
-            pdesc = f"{pdesc} {see}" if pdesc else see
+            pdesc = f"{pdesc} {ilink}" if pdesc else ilink
         elif enum := pschema.get("enum"):
             enum_str = ", ".join(f"``{v}``" for v in enum)
             pdesc = f"{pdesc} One of: {enum_str}." if pdesc else f"One of: {enum_str}."
@@ -116,7 +145,7 @@ def _collect_rows(
         rows.append((f"{_prefix(depth)}``{field_prefix}{pname}``", ptype, pdesc))
 
         # Don't recurse into $ref fields — they're documented as their own schema
-        if not _ref_name(pschema):
+        if not _ref_link(pschema):
             _expand_schema(pschema, depth, rows)
 
     return rows
