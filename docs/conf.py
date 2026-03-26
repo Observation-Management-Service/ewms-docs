@@ -8,11 +8,11 @@ extensions = [
 root_doc = "index"
 html_theme = "sphinx_rtd_theme"
 
-project = "Event Workflow Management Service"
+project = "Event Workflow Management System"
 author = "WIPAC Developers"
 html_show_copyright = False
 
-html_title = "Event Workflow Management Service"
+html_title = "Event Workflow Management System"
 html_short_title = "EWMS"
 
 html_last_updated_fmt = "%Y-%m-%d %H:%M UTC"
