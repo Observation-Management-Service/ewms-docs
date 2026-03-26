@@ -25,8 +25,8 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     ptype = schema.get("type", "")
     if ptype == "array":
         items = schema.get("items", {})
-        items_type = _resolve_type_human(items)
-        return f"array of {items_type}(s)" if items_type else "array"
+        items_type = _resolve_type_human(items, plural=True)
+        return f"array of {items_type}" if items_type else "array"
     if not ptype and "anyOf" in schema:
         ptype = " | ".join(s.get("type", "?") for s in schema["anyOf"])
     return f"{ptype}(s)" if (plural and ptype) else ptype
@@ -81,7 +81,7 @@ def _expand_schema(
             value_type = _resolve_type_human(addl) if isinstance(addl, dict) else ""
             rows.append(
                 (
-                    f"{_prefix(depth + 1)}[*].*(any key)*",
+                    f"{_prefix(depth + 1)}*(any key)*",
                     value_type,
                     "",
                 )
