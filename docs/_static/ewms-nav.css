@@ -135,7 +135,7 @@
     padding-top: 0.5rem !important;
 }
 
-/* Widen the main content area */
+/* Widen the main content area — RTD default is 800px */
 .wy-nav-content {
-    max-width: none !important;
+    max-width: 1200px !important;
 }
