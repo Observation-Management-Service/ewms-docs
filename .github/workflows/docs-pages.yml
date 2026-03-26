@@ -170,7 +170,7 @@ jobs:
           sources/wms/wms/schema/openapi.json \
           docs/apis/_generated/wms-objects.rst \
           --title "Object Glossary" \
-          --include "/docs/_generated/wms-ref-banner.rst"
+          --include "/_generated/wms-ref-banner.rst"
 
       - name: "Generate MQS schemas RST"
         run: |
@@ -179,7 +179,7 @@ jobs:
             sources/mqs/mqs/openapi.json \
             docs/apis/_generated/mqs-objects.rst \
             --title "Object Glossary (mqs)" \
-            --include "/docs/_generated/mqs-ref-banner.rst"
+            --include "/_generated/mqs-ref-banner.rst"
 
       - name: Build docs
         run: |

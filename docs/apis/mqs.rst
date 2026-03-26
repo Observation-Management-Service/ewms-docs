@@ -1,9 +1,9 @@
-.. include:: /docs/_generated/mqs-ref-banner.rst
+.. include:: /_generated/mqs-ref-banner.rst
 
 ewms.icecube.aq/v1/mqs
 ===========================================
 
-.. openapi:: /docs/sources/mqs/mqs/openapi.json
+.. openapi:: /sources/mqs/mqs/openapi.json
    :group:
    :examples:
    :exclude:

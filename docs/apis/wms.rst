@@ -1,9 +1,9 @@
-.. include:: /docs/_generated/wms-ref-banner.rst
+.. include:: /_generated/wms-ref-banner.rst
 
 ewms.icecube.aq/v1/
 =================================================
 
-.. openapi:: /docs/sources/wms/wms/schema/openapi.json
+.. openapi:: /sources/wms/wms/schema/openapi.json
    :examples:
    :group:
    :exclude: /v1/$
