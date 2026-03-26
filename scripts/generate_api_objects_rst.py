@@ -173,12 +173,20 @@ def main() -> None:
     parser.add_argument("spec", type=pathlib.Path, help="Path to openapi.json")
     parser.add_argument("output", type=pathlib.Path, help="Path to output .rst file")
     parser.add_argument("--title", default="API Objects", help="Page title")
+    parser.add_argument(
+        "--include",
+        action="append",
+        help="RST directives to include. Ex: '../foo.rst' -> '.. include:: ../foo.rst'",
+    )
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text())
     schemas = spec.get("components", {}).get("schemas", {})
 
-    lines = [args.title, "=" * len(args.title), ""]
+    lines = []
+    for include in args.include or []:
+        lines.extend([f".. include:: {include}", ""])
+    lines.extend([args.title, "=" * len(args.title), ""])
 
     for name, schema in schemas.items():
         lines.append(name)
