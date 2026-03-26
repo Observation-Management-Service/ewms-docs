@@ -7,8 +7,6 @@
 
    apis/wms
    apis/mqs
-   apis/_generated/wms-objects
-   apis/_generated/mqs-objects
 
 .. toctree::
    :hidden:
