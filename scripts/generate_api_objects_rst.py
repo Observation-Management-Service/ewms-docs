@@ -8,12 +8,13 @@ import textwrap
 
 # Matches bare URLs (https://...)
 # in spec descriptions, converting them to RST anonymous hyperlinks.
-_URL_RE = re.compile(r"(https?://[^`\s]+)")
+# Match URLs, stopping before trailing punctuation (. , ) that ends a sentence)
+_URL_RE = re.compile(r"(https?://[^\s`]+?)([.,)]?)(?=\s|$)")
 
 
 def _linkify(text: str) -> str:
     """Convert any URLs in text to RST anonymous hyperlinks."""
-    return _URL_RE.sub(r"`\1`__", text)
+    return _URL_RE.sub(r"`\1`__\2", text)
 
 
 def _ref_name(schema: dict) -> str | None:
@@ -184,7 +185,7 @@ def main() -> None:
         lines.append(name)
         lines.append("-" * len(name))
         if desc := schema.get("description"):
-            lines.append(textwrap.fill(_linkify(desc), 80))
+            lines.append(_linkify(desc))
         lines.append("")
         props = schema.get("properties", {})
         if props:
