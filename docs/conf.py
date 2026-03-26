@@ -5,7 +5,7 @@ extensions = [
     "sphinx_rtd_theme",
 ]
 
-root_doc = "services/wms"
+root_doc = "index"
 html_theme = "sphinx_rtd_theme"
 
 project = "Event Workflow Management Service"
