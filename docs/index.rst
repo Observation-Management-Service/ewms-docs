@@ -6,8 +6,8 @@
    :caption: APIs
 
    apis/wms
-   apis/mqs
    apis/_generated/wms-objects
+   apis/mqs
    apis/_generated/mqs-objects
 
 .. toctree::
