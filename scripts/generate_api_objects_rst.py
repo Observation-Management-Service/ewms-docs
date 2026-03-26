@@ -14,22 +14,68 @@ def _resolve_type(pschema: dict) -> str:
     return ptype
 
 
+def _expand_schema(
+    pschema: dict,
+    full_name: str,
+    depth: int,
+    rows: list[tuple[str, str, str]],
+) -> None:
+    """Expand a schema's children into rows, handling objects and arrays recursively.
+
+    Mutates rows in place.
+    """
+    indent = "\u00a0" * ((depth + 1) * 4)
+
+    # Nested object with known properties
+    nested_props = pschema.get("properties", {})
+    if nested_props:
+        _collect_rows(nested_props, prefix=f"{full_name}.", depth=depth + 1, rows=rows)
+        return
+
+    # Free-form object (additionalProperties, no properties)
+    if pschema.get("type") == "object" and "additionalProperties" in pschema:
+        rows.append(
+            (
+                f"{indent}*(any key)*",
+                _resolve_type(pschema["additionalProperties"]),
+                "Additional properties.",
+            )
+        )
+        return
+
+    # Array — recurse into items with [] suffix
+    if pschema.get("type") == "array":
+        items = pschema.get("items", {})
+        items_type = _resolve_type(items)
+        array_name = f"{full_name}[]"
+        items_desc = items.get("description", "")
+        rows.append(
+            (
+                f"{indent}``{array_name}``",
+                items_type,
+                items_desc,
+            )
+        )
+        _expand_schema(items, array_name, depth + 1, rows)
+
+
 def _collect_rows(
     props: dict,
     prefix: str = "",
     depth: int = 0,
+    rows: list[tuple[str, str, str]] | None = None,
 ) -> list[tuple[str, str, str]]:
     """Recursively collect (field, type, description) rows from a properties dict.
 
-    Nested object properties are expanded inline with dot-notation field names
-    and an extra level of indentation indicated by the prefix.
+    Nested object properties are expanded inline with dot-notation field names.
+    Array items are expanded with [] notation. Handles arbitrary nesting depth.
     """
-    rows: list[tuple[str, str, str]] = []
-    indent = "\u00a0" * (depth * 4)  # non-breaking spaces for visual indent
+    if rows is None:
+        rows = []
+    indent = "\u00a0" * (depth * 4)
 
     for pname, pschema in props.items():
         full_name = f"{prefix}{pname}" if prefix else pname
-        display_name = f"{indent}``{full_name}``"
         ptype = _resolve_type(pschema)
         pdesc = pschema.get("description", "")
 
@@ -38,27 +84,8 @@ def _collect_rows(
             enum_str = ", ".join(f"``{v}``" for v in enum)
             pdesc = f"{pdesc} One of: {enum_str}." if pdesc else f"One of: {enum_str}."
 
-        rows.append((display_name, ptype, pdesc))
-
-        # Recurse into nested object properties
-        nested_props = pschema.get("properties", {})
-        if nested_props:
-            rows.extend(
-                _collect_rows(
-                    nested_props,
-                    prefix=f"{full_name}.",
-                    depth=depth + 1,
-                )
-            )
-        elif ptype == "object" and "additionalProperties" in pschema:
-            # Note free-form objects
-            rows.append(
-                (
-                    f"{'\u00a0' * ((depth + 1) * 4)}*(any key)*",
-                    _resolve_type(pschema["additionalProperties"]),
-                    "Additional properties.",
-                )
-            )
+        rows.append((f"{indent}``{full_name}``", ptype, pdesc))
+        _expand_schema(pschema, full_name, depth, rows)
 
     return rows
 
