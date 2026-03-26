@@ -76,16 +76,10 @@ def _expand_schema(
         elif items.get("type") == "array":
             # Array of arrays — recurse
             _expand_schema(items, depth, rows)
-        elif items.get("type") == "object" and "additionalProperties" in items:
-            addl = items["additionalProperties"]
-            value_type = _resolve_type_human(addl) if isinstance(addl, dict) else ""
-            rows.append(
-                (
-                    f"{_prefix(depth + 1)}*(any key)*",
-                    value_type,
-                    "",
-                )
-            )
+        # Note: no branch for array-of-free-form-objects (items.type == "object"
+        # with additionalProperties but no properties). The type column already
+        # says "array of object(s)" which is sufficient — there are no known
+        # sub-fields to expand.
 
 
 def _collect_rows(
