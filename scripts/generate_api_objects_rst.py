@@ -61,7 +61,7 @@ def _expand_schema(
             (
                 f"{_prefix(depth + 1)}*(any key)*",
                 value_type,
-                "Additional properties.",
+                "",
             )
         )
         return
@@ -83,7 +83,7 @@ def _expand_schema(
                 (
                     f"{_prefix(depth + 1)}[*].*(any key)*",
                     value_type,
-                    "Additional properties.",
+                    "",
                 )
             )
 
