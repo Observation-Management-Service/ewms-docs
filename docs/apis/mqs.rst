@@ -1,6 +1,6 @@
 .. include:: /_generated_banners/mqs-ref-banner.rst
 
-ewms.icecube.aq/v1/mqs
+ewms*.icecube.aq/v1/mqs
 ===========================================
 
 .. toctree::
