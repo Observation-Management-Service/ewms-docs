@@ -46,6 +46,32 @@ def _ref_link(schema: dict) -> str | None:
     return f"See `{schema_name}`_ (``{field_name}`` field)."
 
 
+def _clean_pointer_parts(parts: list[str]) -> list[str]:
+    """Drop JSON Pointer structural separators so a deep ref path reads like field access.
+
+    Composition keywords (oneOf/anyOf/allOf/prefixItems/patternProperties) are
+    followed by an index/key that's also structural, so drop both.
+    """
+    # JSON Pointer parts that are structural and should be dropped on their own
+    drop_alone = {"properties", "items", "additionalProperties", "not"}
+    # JSON Pointer parts where the keyword AND the following part are both structural
+    drop_with_next = {"oneOf", "anyOf", "allOf", "prefixItems", "patternProperties"}
+
+    cleaned: list[str] = []
+    i = 0
+    while i < len(parts):
+        p = parts[i]
+        if p in drop_alone:
+            i += 1
+        elif p in drop_with_next:
+            # skip the keyword + the following index/key
+            i += 2
+        else:
+            cleaned.append(p)
+            i += 1
+    return cleaned
+
+
 def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     """Return a human-readable type string for a schema.
 
@@ -65,10 +91,13 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
             return f"``{name}(s)``" if plural else f"``{name}``"
         else:
             # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — render
-            # as 'Foo.bar' dotted path, dropping 'properties' separators
+            # as 'Foo.bar' dotted path, dropping JSON Pointer structural noise
             schema_name = parts[2]
-            field_path = ".".join(p for p in parts[3:] if p != "properties")
-            full = f"{schema_name}.{field_path}"
+            cleaned = _clean_pointer_parts(parts[3:])
+            if cleaned:
+                full = f"{schema_name}." + ".".join(cleaned)
+            else:
+                full = schema_name
             return f"``{full}(s)``" if plural else f"``{full}``"
     ptype = schema.get("type", "")
     if ptype == "array":
