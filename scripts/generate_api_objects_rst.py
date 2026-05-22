@@ -25,7 +25,8 @@ def _ref_link(schema: dict) -> str | None:
 
     Handles both top-level refs (#/components/schemas/Foo) and deep refs
     (#/components/schemas/Foo/properties/bar), linking to the top-level schema
-    in both cases.
+    in both cases. For deep refs, appends '(field)' to hint that the link
+    target is a sub-field — the Type column carries the actual dotted path.
     """
     ref = schema.get("$ref", "")
     if not ref:
@@ -40,10 +41,8 @@ def _ref_link(schema: dict) -> str | None:
     # Exactly 3 parts = top-level schema ref
     if len(parts) == 3:
         return f"See `{schema_name}`_."
-    # More than 3 parts = deep ref into a sub-field — link to the top-level schema
-    # and note which field it points to
-    field_name = parts[-1]
-    return f"See `{schema_name}`_ (``{field_name}`` field)."
+    # Deep ref — Type column already shows the dotted path; just hint at field-ness
+    return f"See field in `{schema_name}`_."
 
 
 def _clean_pointer_parts(parts: list[str]) -> list[str]:
@@ -76,7 +75,7 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     """Return a human-readable type string for a schema.
 
     - top-level $ref  -> ``RefName`` (or ``RefName(s)`` if plural)
-    - deep $ref       -> ``Schema.field`` (dotted path into the target)
+    - deep $ref       -> ``Schema.field`` (dotted path; not pluralized)
     - array           -> 'array of X(s)' where X is the items type
     - anyOf           -> 'type1 | type2'
     - plain type      -> 'string', 'integer', etc.
@@ -91,14 +90,15 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
             return f"``{name}(s)``" if plural else f"``{name}``"
         else:
             # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — render
-            # as 'Foo.bar' dotted path, dropping JSON Pointer structural noise
+            # as 'Foo.bar' dotted path, dropping JSON Pointer structural noise.
+            # No '(s)' variant: pluralizing a field path doesn't read sensibly.
             schema_name = parts[2]
             cleaned = _clean_pointer_parts(parts[3:])
             if cleaned:
                 full = f"{schema_name}." + ".".join(cleaned)
             else:
                 full = schema_name
-            return f"``{full}(s)``" if plural else f"``{full}``"
+            return f"``{full}``"
     ptype = schema.get("type", "")
     if ptype == "array":
         items = schema.get("items", {})
