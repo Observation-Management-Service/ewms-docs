@@ -2,3 +2,24 @@
 .wy-nav-content {
     max-width: 1000px !important;
 }
+
+/* Force columns to honor the declared :widths: ratios */
+.rst-content table.docutils {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* Allow cells to wrap, including inside long unbreakable tokens */
+.rst-content table.docutils td,
+.rst-content table.docutils th {
+    overflow-wrap: anywhere;
+    white-space: normal;
+    vertical-align: top;
+}
+
+/* Inline code (``foo``) should wrap too — default is nowrap */
+.rst-content table.docutils td code,
+.rst-content table.docutils td .pre {
+    white-space: normal;
+    word-break: break-word;
+}
