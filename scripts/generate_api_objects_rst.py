@@ -77,8 +77,9 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     - top-level $ref  -> ``RefName`` (or ``RefName(s)`` if plural)
     - deep $ref       -> ``Schema.field`` (dotted path; not pluralized)
     - array           -> 'array of X(s)' where X is the items type
-    - anyOf/oneOf     -> 'X or Y' (each variant recursively resolved)
-    - multi-type      -> 'string or null' (OpenAPI 3.1 'type' array)
+                         (X is parenthesized if it contains '|')
+    - anyOf/oneOf     -> 'X | Y' (pipe-separated)
+    - multi-type      -> 'string | null' (OpenAPI 3.1 'type' array)
     - plain type      -> 'string', 'integer', etc.
     """
     ref = schema.get("$ref", "")
@@ -101,17 +102,23 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
                 full = schema_name
             return f"``{full}``"
     ptype = schema.get("type", "")
-    # OpenAPI 3.1 multi-type: type: ["string", "null"] -> "string or null"
+    # OpenAPI 3.1 multi-type: type: ["string", "null"] -> "string | null"
     if isinstance(ptype, list):
-        return " or ".join(ptype)
+        return " | ".join(ptype)
     if ptype == "array":
         items = schema.get("items", {})
         items_type = _resolve_type_human(items, plural=True)
-        return f"array of {items_type}" if items_type else "array"
+        if not items_type:
+            return "array"
+        # Bracket compound item types so union scope is unambiguous
+        # ("array of (string | null)" not "array of string | null")
+        if " | " in items_type:
+            items_type = f"({items_type})"
+        return f"array of {items_type}"
     # anyOf/oneOf union — recurse so $refs and multi-types render properly
     variants = schema.get("anyOf") or schema.get("oneOf")
     if not ptype and variants:
-        return " or ".join(_resolve_type_human(v) for v in variants)
+        return " | ".join(_resolve_type_human(v) for v in variants)
     return f"{ptype}(s)" if (plural and ptype) else ptype
 
 
