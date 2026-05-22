@@ -71,12 +71,12 @@ def _clean_pointer_parts(parts: list[str]) -> list[str]:
     return cleaned
 
 
-def _resolve_type_human(schema: dict, plural: bool = False) -> str:
+def _resolve_type_human(schema: dict) -> str:
     """Return a human-readable type string for a schema.
 
-    - top-level $ref  -> ``RefName`` (or ``RefName(s)`` if plural)
-    - deep $ref       -> ``Schema.field`` (dotted path; not pluralized)
-    - array           -> 'array of X(s)' where X is the items type
+    - top-level $ref  -> ``RefName``
+    - deep $ref       -> ``Schema.field`` (dotted path)
+    - array           -> 'array of X' where X is the items type
                          (X is parenthesized if it contains '|')
     - anyOf/oneOf     -> 'X | Y' (pipe-separated)
     - multi-type      -> 'string | null' (OpenAPI 3.1 'type' array)
@@ -89,11 +89,10 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
         # Exactly 3 parts = top-level schema ref with a usable name
         if len(parts) == 3:
             name = parts[2]
-            return f"``{name}(s)``" if plural else f"``{name}``"
+            return f"``{name}``"
         else:
             # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — render
             # as 'Foo.bar' dotted path, dropping JSON Pointer structural noise.
-            # No '(s)' variant: pluralizing a field path doesn't read sensibly.
             schema_name = parts[2]
             cleaned = _clean_pointer_parts(parts[3:])
             if cleaned:
@@ -107,7 +106,7 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
         return " | ".join(ptype)
     if ptype == "array":
         items = schema.get("items", {})
-        items_type = _resolve_type_human(items, plural=True)
+        items_type = _resolve_type_human(items)
         if not items_type:
             return "array"
         # Bracket compound item types so union scope is unambiguous
@@ -119,7 +118,7 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     variants = schema.get("anyOf") or schema.get("oneOf")
     if not ptype and variants:
         return " | ".join(_resolve_type_human(v) for v in variants)
-    return f"{ptype}(s)" if (plural and ptype) else ptype
+    return ptype
 
 
 def _prefix(depth: int) -> str:
