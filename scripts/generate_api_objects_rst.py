@@ -50,7 +50,7 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
     """Return a human-readable type string for a schema.
 
     - top-level $ref  -> ``RefName`` (or ``RefName(s)`` if plural)
-    - deep $ref       -> object (the actual type isn't a named schema)
+    - deep $ref       -> ``Schema.field`` (dotted path into the target)
     - array           -> 'array of X(s)' where X is the items type
     - anyOf           -> 'type1 | type2'
     - plain type      -> 'string', 'integer', etc.
@@ -64,9 +64,12 @@ def _resolve_type_human(schema: dict, plural: bool = False) -> str:
             name = parts[2]
             return f"``{name}(s)``" if plural else f"``{name}``"
         else:
-            # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — no clean
-            # type name to show; fall back to 'object'
-            return "object"
+            # Deep ref (e.g. #/components/schemas/Foo/properties/bar) — render
+            # as 'Foo.bar' dotted path, dropping 'properties' separators
+            schema_name = parts[2]
+            field_path = ".".join(p for p in parts[3:] if p != "properties")
+            full = f"{schema_name}.{field_path}"
+            return f"``{full}(s)``" if plural else f"``{full}``"
     ptype = schema.get("type", "")
     if ptype == "array":
         items = schema.get("items", {})
