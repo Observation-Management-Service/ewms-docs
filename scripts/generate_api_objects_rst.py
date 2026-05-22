@@ -243,7 +243,7 @@ def main() -> None:
             rows = _collect_rows(props)
             lines.append(".. list-table::")
             lines.append("   :header-rows: 1")
-            lines.append("   :widths: 35 15 50")
+            lines.append("   :widths: 30 30 40")
             lines.append("")
             lines.append("   * - Field")
             lines.append("     - Type")
