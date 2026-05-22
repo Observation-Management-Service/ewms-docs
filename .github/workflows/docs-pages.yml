@@ -1,4 +1,4 @@
-name: Build EWMS docs (cron or manual trigger)
+name: Build EWMS docs
 
 permissions:
   contents: read
