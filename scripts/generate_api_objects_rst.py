@@ -211,18 +211,20 @@ def _collect_rows(
     return rows
 
 
-def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str, str]]]:
-    """Build a reverse map {schema_name: [(METHOD, path, role), ...]} from the spec.
+def _operations_using_schema(spec: dict) -> dict[str, dict[str, list[tuple[str, str]]]]:
+    """Build a reverse map {schema_name: {'input': [...], 'output': [...]}} from the spec.
 
-    Walks each operation's input side (parameters + requestBody) and output side
-    (responses) separately so each occurrence can be labeled. Path-level parameters
-    are folded into the input side for every method on that path. Role is one of
-    'input', 'output', or 'input & output' (when a schema appears on both sides of
-    a single operation).
+    Each list contains (METHOD, path) tuples for operations that use the schema on
+    that side, sorted alphabetically. A schema appearing on both sides of a single
+    operation is listed in both buckets.
 
     Only TOP-LEVEL $refs (e.g. '#/components/schemas/Manifest') count as a use.
     Deep refs into a sub-field (e.g. '.../Manifest/properties/scan_id') are ignored
     — they borrow a field definition, not the whole object.
+
+    Walks each operation's input side (parameters + requestBody) and output side
+    (responses) separately. Path-level parameters are folded into the input side
+    for every method on that path.
     """
 
     def find_refs(node: object) -> set[str]:
@@ -250,7 +252,7 @@ def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str, str]]
                 refs |= find_refs(x)
         return refs
 
-    result: dict[str, list[tuple[str, str, str]]] = {}
+    result: dict[str, dict[str, list[tuple[str, str]]]] = {}
     for path, item in spec.get("paths", {}).items():
         # Path-level parameters apply to every method on this path
         path_param_refs = find_refs(item.get("parameters", []))
@@ -267,18 +269,17 @@ def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str, str]]
             # Output side = responses
             out_refs = find_refs(op.get("responses", {}))
 
-            # Each schema gets one entry per (method, path), role tells you which side
-            for schema in in_refs | out_refs:
-                in_in = schema in in_refs
-                in_out = schema in out_refs
-                if in_in and in_out:
-                    role = "input & output"
-                elif in_in:
-                    role = "input"
-                else:
-                    role = "output"
-                # spec-order is preserved via dict insertion order
-                result.setdefault(schema, []).append((method.upper(), path, role))
+            for schema in in_refs:
+                bucket = result.setdefault(schema, {"input": [], "output": []})
+                bucket["input"].append((method.upper(), path))
+            for schema in out_refs:
+                bucket = result.setdefault(schema, {"input": [], "output": []})
+                bucket["output"].append((method.upper(), path))
+
+    # Sort each list (default tuple sort: method first, then path)
+    for buckets in result.values():
+        buckets["input"] = sorted(buckets["input"])
+        buckets["output"] = sorted(buckets["output"])
 
     return result
 
@@ -306,15 +307,16 @@ def main() -> None:
     )
     parser.add_argument(
         "--endpoints-url",
-        help="URL or relative path to the API page; each schema then gets a "
-        "bulleted list of operations that use it. Ex: '../skydriver.html' for "
-        "a relative link from a sibling _generated/ dir, or a full https:// URL.",
+        help="URL or relative path to the API page; each schema then gets two "
+        "bulleted lists ('Used as input by' / 'Used as output by') of operations "
+        "that use it. Ex: '../skydriver.html' for a relative link from a sibling "
+        "_generated/ dir, or a full https:// URL.",
     )
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text())
     schemas = spec.get("components", {}).get("schemas", {})
-    # Reverse-map (schema -> list of endpoints with role) once; empty if flag off
+    # Reverse-map (schema -> {'input': [...], 'output': [...]}); empty if flag off
     ops_by_schema = _operations_using_schema(spec) if args.endpoints_url else {}
 
     lines = []
@@ -328,16 +330,22 @@ def main() -> None:
         if desc := schema.get("description"):
             lines.append(_linkify(desc))
         lines.append("")
-        # Bulleted list of endpoints that reference this schema (skipped if empty).
-        # Label gives context; bold method makes scanning verbs at a glance easy;
-        # italic role at the end indicates request vs response side.
-        if ops := ops_by_schema.get(name):
-            lines.append("**Used by:**")
-            lines.append("")
-            for method, path, role in ops:
-                url = f"{args.endpoints_url}#{_endpoint_anchor(method, path)}"
-                lines.append(f"- **{method}** `{path} <{url}>`__ — *{role}*")
-            lines.append("")
+        # Two bulleted lists: schemas used as input vs output for each operation.
+        # Each section is omitted if empty; sorted alphabetically (method, then path).
+        if buckets := ops_by_schema.get(name):
+            for label, key in (
+                ("Used as input by", "input"),
+                ("Used as output by", "output"),
+            ):
+                ops = buckets[key]
+                if not ops:
+                    continue
+                lines.append(f"**{label}:**")
+                lines.append("")
+                for method, path in ops:
+                    url = f"{args.endpoints_url}#{_endpoint_anchor(method, path)}"
+                    lines.append(f"- **{method}** `{path} <{url}>`__")
+                lines.append("")
         props = schema.get("properties", {})
         if props:
             rows = _collect_rows(props)
