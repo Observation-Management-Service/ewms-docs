@@ -214,11 +214,11 @@ def _collect_rows(
 def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str, str]]]:
     """Build a reverse map {schema_name: [(METHOD, path, role), ...]} from the spec.
 
-    Walks each operation's request side (parameters + requestBody) and response side
+    Walks each operation's input side (parameters + requestBody) and output side
     (responses) separately so each occurrence can be labeled. Path-level parameters
-    are folded into the request side for every method on that path. Role is one of
-    'request', 'response', or 'request & response' (when a schema appears on both
-    sides of a single operation).
+    are folded into the input side for every method on that path. Role is one of
+    'input', 'output', or 'input & output' (when a schema appears on both sides of
+    a single operation).
 
     Only TOP-LEVEL $refs (e.g. '#/components/schemas/Manifest') count as a use.
     Deep refs into a sub-field (e.g. '.../Manifest/properties/scan_id') are ignored
@@ -258,25 +258,25 @@ def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str, str]]
             if method not in item:
                 continue
             op = item[method]
-            # Request side = requestBody + op-level parameters + path-level parameters
-            req_refs = (
+            # Input side = requestBody + op-level parameters + path-level parameters
+            in_refs = (
                 find_refs(op.get("requestBody", {}))
                 | find_refs(op.get("parameters", []))
                 | path_param_refs
             )
-            # Response side = responses
-            resp_refs = find_refs(op.get("responses", {}))
+            # Output side = responses
+            out_refs = find_refs(op.get("responses", {}))
 
             # Each schema gets one entry per (method, path), role tells you which side
-            for schema in req_refs | resp_refs:
-                in_req = schema in req_refs
-                in_resp = schema in resp_refs
-                if in_req and in_resp:
-                    role = "request & response"
-                elif in_req:
-                    role = "request"
+            for schema in in_refs | out_refs:
+                in_in = schema in in_refs
+                in_out = schema in out_refs
+                if in_in and in_out:
+                    role = "input & output"
+                elif in_in:
+                    role = "input"
                 else:
-                    role = "response"
+                    role = "output"
                 # spec-order is preserved via dict insertion order
                 result.setdefault(schema, []).append((method.upper(), path, role))
 
