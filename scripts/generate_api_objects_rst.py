@@ -325,6 +325,7 @@ def main() -> None:
     lines.extend([args.title, "=" * len(args.title), ""])
 
     for name, schema in schemas.items():
+        lines.append("<hr>")  # horizontal line
         lines.append(name)
         lines.append("-" * len(name))
         if desc := schema.get("description"):
@@ -363,14 +364,6 @@ def main() -> None:
                 lines.append(f"   * - {field}")
                 lines.append(f"     - {ftype}")
                 lines.append(f"     - {fdesc}")
-            lines.append("")
-            # Visible vertical space after the table — RST collapses blank source
-            # lines in rendered HTML, so we use raw HTML to actually produce space.
-            lines.append(".. raw:: html")
-            lines.append("")
-            lines.append("   <br>")
-            lines.append("   <hr>")
-            lines.append("   <br>")
             lines.append("")
         lines.append("")
 
