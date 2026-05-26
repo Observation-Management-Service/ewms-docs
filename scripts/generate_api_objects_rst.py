@@ -311,6 +311,7 @@ def main() -> None:
         "bulleted lists ('Used as input by' / 'Used as output by') of operations "
         "that use it. Ex: '../skydriver.html' for a relative link from a sibling "
         "_generated/ dir, or a full https:// URL.",
+        required=True,
     )
     args = parser.parse_args()
 
@@ -320,10 +321,23 @@ def main() -> None:
     ops_by_schema = _operations_using_schema(spec) if args.endpoints_url else {}
 
     lines = []
+
+    # include directives (optional)
     for include in args.include or []:
         lines.extend([f".. include:: {include}", ""])
+
+    # page title
     lines.extend([args.title, "=" * len(args.title), ""])
 
+    # page description
+    lines.append(
+        f"Detailed below are the central objects used in the API. This documentation "
+        f"is generated from the OpenAPI spec, and the original ordering is preserved. "
+        f"For information detailing usage, see the "
+        f"`API endpoints docs <{args.endpoints_url}>`__."
+    )
+
+    # objects
     for name, schema in schemas.items():
         lines.extend([".. raw:: html", "", "   <br>", "   <hr>", "   <br>", ""])  # ----
         lines.append(name)
