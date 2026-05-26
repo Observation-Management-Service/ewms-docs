@@ -174,7 +174,7 @@ jobs:
           python scripts/generate_api_objects_rst.py \
               _runtime_sources/wms/wms/schema/openapi.json \
               docs/apis/_generated/wms-objects.rst \
-              --title "Object Glossary" \ 
+              --title "Object Glossary" \
               --include "/_generated_banners/wms-ref-banner.rst" \
               --endpoints-url "https://observation-management-service.github.io/ewms-docs/apis/wms.html"
 
