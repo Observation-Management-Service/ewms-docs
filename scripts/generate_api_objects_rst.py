@@ -333,8 +333,8 @@ def main() -> None:
     lines.append(
         f"Detailed below are the central objects used in the API. This documentation "
         f"is generated from the OpenAPI spec, and the original ordering is preserved. "
-        f"For information detailing usage, see the "
-        f"`API endpoints docs <{args.endpoints_url}>`__."
+        f"See the `API endpoints docs <{args.endpoints_url}>`__ for information "
+        f"detailing usage."
     )
 
     # objects
