@@ -211,12 +211,14 @@ def _collect_rows(
     return rows
 
 
-def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str]]]:
-    """Build a reverse map {schema_name: [(METHOD, path), ...]} from the spec.
+def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str, str]]]:
+    """Build a reverse map {schema_name: [(METHOD, path, role), ...]} from the spec.
 
-    A schema is 'used' by an operation if a $ref to it (or any deep ref into
-    one of its fields) appears anywhere in the operation's request/response/
-    parameters subtree. Deep refs are credited to the top-level schema.
+    Walks each operation's request side (parameters + requestBody) and response side
+    (responses) separately so each occurrence can be labeled. Path-level parameters
+    are folded into the request side for every method on that path. Role is one of
+    'request', 'response', or 'request & response' (when a schema appears on both
+    sides of a single operation).
     """
 
     def find_refs(node: object) -> set[str]:
@@ -241,14 +243,36 @@ def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str]]]:
                 refs |= find_refs(x)
         return refs
 
-    result: dict[str, list[tuple[str, str]]] = {}
+    result: dict[str, list[tuple[str, str, str]]] = {}
     for path, item in spec.get("paths", {}).items():
+        # Path-level parameters apply to every method on this path
+        path_param_refs = find_refs(item.get("parameters", []))
         for method in ("get", "post", "put", "delete", "patch"):
             if method not in item:
                 continue
-            for schema in find_refs(item[method]):
-                # spec-order is preserved by dict insertion order
-                result.setdefault(schema, []).append((method.upper(), path))
+            op = item[method]
+            # Request side = requestBody + op-level parameters + path-level parameters
+            req_refs = (
+                find_refs(op.get("requestBody", {}))
+                | find_refs(op.get("parameters", []))
+                | path_param_refs
+            )
+            # Response side = responses
+            resp_refs = find_refs(op.get("responses", {}))
+
+            # Each schema gets one entry per (method, path), role tells you which side
+            for schema in req_refs | resp_refs:
+                in_req = schema in req_refs
+                in_resp = schema in resp_refs
+                if in_req and in_resp:
+                    role = "request & response"
+                elif in_req:
+                    role = "request"
+                else:
+                    role = "response"
+                # spec-order is preserved via dict insertion order
+                result.setdefault(schema, []).append((method.upper(), path, role))
+
     return result
 
 
@@ -275,15 +299,15 @@ def main() -> None:
     )
     parser.add_argument(
         "--endpoints-url",
-        help="Base URL for endpoint references. If set, each schema gets a "
-        "bulleted list of operations that use it. Ex: "
-        "'https://wipacrepo.github.io/SkyDriver/apis/skydriver.html'",
+        help="URL or relative path to the API page; each schema then gets a "
+        "bulleted list of operations that use it. Ex: '../skydriver.html' for "
+        "a relative link from a sibling _generated/ dir, or a full https:// URL.",
     )
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text())
     schemas = spec.get("components", {}).get("schemas", {})
-    # Reverse-map (schema -> list of endpoints) once; empty dict if flag is off
+    # Reverse-map (schema -> list of endpoints with role) once; empty if flag off
     ops_by_schema = _operations_using_schema(spec) if args.endpoints_url else {}
 
     lines = []
@@ -297,11 +321,15 @@ def main() -> None:
         if desc := schema.get("description"):
             lines.append(_linkify(desc))
         lines.append("")
-        # Bulleted list of endpoints that reference this schema (skipped if empty)
+        # Bulleted list of endpoints that reference this schema (skipped if empty).
+        # Label gives context; bold method makes scanning verbs at a glance easy;
+        # italic role at the end indicates request vs response side.
         if ops := ops_by_schema.get(name):
-            for method, path in ops:
+            lines.append("**Used by:**")
+            lines.append("")
+            for method, path, role in ops:
                 url = f"{args.endpoints_url}#{_endpoint_anchor(method, path)}"
-                lines.append(f"- `{method} {path} <{url}>`__")
+                lines.append(f"- **{method}** `{path} <{url}>`__ — *{role}*")
             lines.append("")
         props = schema.get("properties", {})
         if props:
