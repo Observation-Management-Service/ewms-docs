@@ -219,19 +219,26 @@ def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str, str]]
     are folded into the request side for every method on that path. Role is one of
     'request', 'response', or 'request & response' (when a schema appears on both
     sides of a single operation).
+
+    Only TOP-LEVEL $refs (e.g. '#/components/schemas/Manifest') count as a use.
+    Deep refs into a sub-field (e.g. '.../Manifest/properties/scan_id') are ignored
+    — they borrow a field definition, not the whole object.
     """
 
     def find_refs(node: object) -> set[str]:
-        """Recursively collect every top-level schema name referenced under node."""
+        """Recursively collect every top-level component schema referenced under node.
+
+        Deep refs (>3 parts) are intentionally skipped — see parent docstring.
+        """
         refs: set[str] = set()
         if isinstance(node, dict):
             for k, v in node.items():
                 if k == "$ref" and isinstance(v, str):
-                    # parts looks like ['components', 'schemas', 'Name', ...] (deep ok)
+                    # parts looks like ['components', 'schemas', 'Name']
                     parts = v.lstrip("#/").split("/")
-                    # Need at least 3 parts to identify a component schema ref
+                    # Exactly 3 parts = top-level component schema ref
                     if (
-                        len(parts) >= 3
+                        len(parts) == 3
                         and parts[0] == "components"
                         and parts[1] == "schemas"
                     ):
