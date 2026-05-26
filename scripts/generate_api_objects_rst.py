@@ -325,6 +325,7 @@ def main() -> None:
     lines.extend([args.title, "=" * len(args.title), ""])
 
     for name, schema in schemas.items():
+        lines.extend([".. raw:: html", "", "   <hr>", "   <br>", ""])  # horiz line
         lines.append(name)
         lines.append("-" * len(name))
         if desc := schema.get("description"):
