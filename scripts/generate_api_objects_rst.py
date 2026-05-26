@@ -211,6 +211,57 @@ def _collect_rows(
     return rows
 
 
+def _operations_using_schema(spec: dict) -> dict[str, list[tuple[str, str]]]:
+    """Build a reverse map {schema_name: [(METHOD, path), ...]} from the spec.
+
+    A schema is 'used' by an operation if a $ref to it (or any deep ref into
+    one of its fields) appears anywhere in the operation's request/response/
+    parameters subtree. Deep refs are credited to the top-level schema.
+    """
+
+    def find_refs(node: object) -> set[str]:
+        """Recursively collect every top-level schema name referenced under node."""
+        refs: set[str] = set()
+        if isinstance(node, dict):
+            for k, v in node.items():
+                if k == "$ref" and isinstance(v, str):
+                    # parts looks like ['components', 'schemas', 'Name', ...] (deep ok)
+                    parts = v.lstrip("#/").split("/")
+                    # Need at least 3 parts to identify a component schema ref
+                    if (
+                        len(parts) >= 3
+                        and parts[0] == "components"
+                        and parts[1] == "schemas"
+                    ):
+                        refs.add(parts[2])
+                else:
+                    refs |= find_refs(v)
+        elif isinstance(node, list):
+            for x in node:
+                refs |= find_refs(x)
+        return refs
+
+    result: dict[str, list[tuple[str, str]]] = {}
+    for path, item in spec.get("paths", {}).items():
+        for method in ("get", "post", "put", "delete", "patch"):
+            if method not in item:
+                continue
+            for schema in find_refs(item[method]):
+                # spec-order is preserved by dict insertion order
+                result.setdefault(schema, []).append((method.upper(), path))
+    return result
+
+
+def _endpoint_anchor(method: str, path: str) -> str:
+    """Build a sphinxcontrib-openapi-style anchor: 'post--scans-find'.
+
+    Method is lowercased; path slashes become dashes; curly braces are stripped.
+    """
+    # strip leading slash, replace path separators with dashes, drop curly braces
+    slug = path.lstrip("/").replace("/", "-").replace("{", "").replace("}", "")
+    return f"{method.lower()}--{slug}"
+
+
 def main() -> None:
     """Parse args and write the RST file."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -222,10 +273,18 @@ def main() -> None:
         action="append",
         help="RST directives to include. Ex: '../foo.rst' -> '.. include:: ../foo.rst'",
     )
+    parser.add_argument(
+        "--endpoints-url",
+        help="Base URL for endpoint references. If set, each schema gets a "
+        "bulleted list of operations that use it. Ex: "
+        "'https://wipacrepo.github.io/SkyDriver/apis/skydriver.html'",
+    )
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text())
     schemas = spec.get("components", {}).get("schemas", {})
+    # Reverse-map (schema -> list of endpoints) once; empty dict if flag is off
+    ops_by_schema = _operations_using_schema(spec) if args.endpoints_url else {}
 
     lines = []
     for include in args.include or []:
@@ -238,12 +297,18 @@ def main() -> None:
         if desc := schema.get("description"):
             lines.append(_linkify(desc))
         lines.append("")
+        # Bulleted list of endpoints that reference this schema (skipped if empty)
+        if ops := ops_by_schema.get(name):
+            for method, path in ops:
+                url = f"{args.endpoints_url}#{_endpoint_anchor(method, path)}"
+                lines.append(f"- `{method} {path} <{url}>`__")
+            lines.append("")
         props = schema.get("properties", {})
         if props:
             rows = _collect_rows(props)
             lines.append(".. list-table::")
             lines.append("   :header-rows: 1")
-            lines.append("   :widths: 30 30 40")
+            lines.append("   :widths: 30 40 30")
             lines.append("")
             lines.append("   * - Field")
             lines.append("     - Type")
