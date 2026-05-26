@@ -336,6 +336,7 @@ def main() -> None:
         f"See the `API endpoints docs <{args.endpoints_url}>`__ for information "
         f"detailing usage."
     )
+    lines.append("")
 
     # objects
     for name, schema in schemas.items():
