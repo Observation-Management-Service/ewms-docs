@@ -349,6 +349,9 @@ def main() -> None:
         props = schema.get("properties", {})
         if props:
             rows = _collect_rows(props)
+            # Bold label gives the table context (parallel to 'Used as input by' etc.)
+            lines.append("**Fields:**")
+            lines.append("")
             lines.append(".. list-table::")
             lines.append("   :header-rows: 1")
             lines.append("   :widths: 30 40 30")
@@ -360,6 +363,13 @@ def main() -> None:
                 lines.append(f"   * - {field}")
                 lines.append(f"     - {ftype}")
                 lines.append(f"     - {fdesc}")
+            lines.append("")
+            # Visible vertical space after the table — RST collapses blank source
+            # lines in rendered HTML, so we use raw HTML to actually produce space.
+            lines.append(".. raw:: html")
+            lines.append("")
+            lines.append("   <br>")
+            lines.append("")
         lines.append("")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
