@@ -325,7 +325,7 @@ def main() -> None:
     lines.extend([args.title, "=" * len(args.title), ""])
 
     for name, schema in schemas.items():
-        lines.extend([".. raw:: html", "", "   <hr>", "   <br>", ""])  # horiz line
+        lines.extend([".. raw:: html", "", "   <br>", "   <hr>", ""])  # horiz line
         lines.append(name)
         lines.append("-" * len(name))
         if desc := schema.get("description"):
@@ -365,7 +365,6 @@ def main() -> None:
                 lines.append(f"     - {ftype}")
                 lines.append(f"     - {fdesc}")
             lines.append("")
-            lines.extend([".. raw:: html", "", "   <hr>", "   <br>", ""])  # horiz line
         lines.append("")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
