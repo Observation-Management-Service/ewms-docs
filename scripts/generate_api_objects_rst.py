@@ -369,6 +369,7 @@ def main() -> None:
             lines.append(".. raw:: html")
             lines.append("")
             lines.append("   <br>")
+            lines.append("   <br>")
             lines.append("")
         lines.append("")
 
